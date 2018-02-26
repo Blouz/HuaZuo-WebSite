@@ -1,9 +1,11 @@
 <?php
 // Registry
-$registry = new Registry();
+$registry = Registry::getSingleton();
 
 // Config
 $config = new Config();
+
+// Load the default config
 $config->load('default');
 $config->load($application_config);
 $registry->set('config', $config);
@@ -80,6 +82,23 @@ if ($config->get('db_autostart')) {
 	$registry->set('db', new DB($config->get('db_engine'), $config->get('db_hostname'), $config->get('db_username'), $config->get('db_password'), $config->get('db_database'), $config->get('db_port')));
 }
 
+if (class_exists(\DebugBar\StandardDebugBar::class) && is_debug()) {
+    $debugBar = new \DebugBar\StandardDebugBar();
+    $adaptor = $registry->get('db')->getAdaptor();
+    if ($adaptor instanceof \DB\mPDO) {
+        $pdoCollector = new DebugBar\DataCollector\PDO\TraceablePDO($adaptor->getConnection());
+        $debugBar->addCollector(new DebugBar\DataCollector\PDO\PDOCollector($pdoCollector));
+    }
+    $debugBarRenderer = $debugBar->getJavascriptRenderer();
+    $registry->set('debug_bar', $debugBarRenderer);
+}
+if (class_exists(\Whoops\Run::class) && is_debug()) {
+    $whoops = new \Whoops\Run;
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    $whoops->register();
+    $registry->set('whoops', $whoops);
+}
+
 // Session
 $session = new Session($config->get('session_engine'), $registry);
 $registry->set('session', $session);
@@ -105,7 +124,7 @@ if ($config->get('session_autostart')) {
 
 	$session->start($session_id);
 
-	setcookie($config->get('session_name'), $session->getId(), ini_get('session.cookie_lifetime'), ini_get('session.cookie_path'), ini_get('session.cookie_domain'));
+	setcookie($config->get('session_name'), $session->getId(), (ini_get('session.cookie_lifetime') ? (time() + ini_get('session.cookie_lifetime')) : 0), ini_get('session.cookie_path'), ini_get('session.cookie_domain'));
 }
 
 // Cache
@@ -113,15 +132,16 @@ $registry->set('cache', new Cache($config->get('cache_engine'), $config->get('ca
 
 // Url
 if ($config->get('url_autostart')) {
-	$registry->set('url', new Url($config->get('site_url'), $config->get('site_ssl')));
+	$registry->set('url', new Url($config->get('site_url')));
+}
+
+if (is_admin()) {
+    $registry->set('front_url', new Url(HTTP_CATALOG));
 }
 
 // Language
 $language = new Language($config->get('language_directory'));
 $registry->set('language', $language);
-
-// OpenBay Pro
-$registry->set('openbay', new Openbay($registry));
 
 // Document
 $registry->set('document', new Document());

@@ -9,7 +9,7 @@ define('HTTPS_SERVER', 'http://myhuazuo.com/');
 define('DIR_APPLICATION', '/opt/lampp/htdocs/catalog/');
 define('DIR_SYSTEM', '/opt/lampp/htdocs/system/');
 define('DIR_IMAGE', '/opt/lampp/htdocs/image/');
-define('DIR_STORAGE', '/opt/lampp/storage/');
+define('DIR_STORAGE', DIR_SYSTEM . 'storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');

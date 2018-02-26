@@ -93,8 +93,7 @@ class ControllerExtensionTotalShipping extends Controller {
 			}
 
 			$this->session->data['shipping_address'] = array(
-				'firstname'      => '',
-				'lastname'       => '',
+				'fullname'      => '',
 				'company'        => '',
 				'address_1'      => '',
 				'address_2'      => '',

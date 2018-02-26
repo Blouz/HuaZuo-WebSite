@@ -10,3 +10,6 @@ $_['text_homepage']      = 'OpenCart Homepage';
 $_['text_support']       = 'Support Forum';
 $_['text_documentation'] = 'Documentation';
 $_['text_logout']        = 'Logout';
+$_['text_sort']          = 'Sort Order';
+$_['text_delete']        = 'Delete';
+$_['text_main_image']    = 'Set Main Image';

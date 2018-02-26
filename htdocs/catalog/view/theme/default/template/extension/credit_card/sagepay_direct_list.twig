@@ -1,10 +1,6 @@
 {{ header }}
 <div class="container">
-  <ul class="breadcrumb">
-    {% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-    {% endfor %}
-  </ul>
+  {{ include('default/template/_partial/breadcrumb.twig') }}
   {% if success %}
   <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
   {% endif %}
@@ -28,10 +24,10 @@
               <td class="text-left">{{ column_type }}</td>
               <td class="text-left">{{ column_digits }}</td>
               <td class="text-right">{{ column_expiry }}</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
-          
           {% if cards %}
           {% for card in cards %}
           <tr>
@@ -43,11 +39,10 @@
           {% endfor %}
           {% else %}
           <tr>
-            <td class="text-center" colspan="5">{{ text_empty }}</td>
+            <td class="text-center" colspan="4">{{ text_no_results }}</td>
           </tr>
           {% endif %}
-            </tbody>
-          
+          </tbody>
         </table>
       </div>
       <div class="row">
@@ -61,4 +56,4 @@
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
-{{ footer }} 
+{{ footer }}

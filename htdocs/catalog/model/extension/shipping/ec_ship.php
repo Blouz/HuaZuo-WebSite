@@ -391,7 +391,7 @@ class ModelExtensionShippingECShip extends Model {
 
 			$address_to = array(
 				'country'	   => '',
-				'contact_name' => $address['firstname'] . ' ' . $address['lastname'],
+				'contact_name' => $address['fullname'],
 				'company_name' => $address['company'],
 				'code'         => ''
 			);

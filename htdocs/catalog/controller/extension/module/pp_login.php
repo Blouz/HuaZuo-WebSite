@@ -5,7 +5,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 	public function index() {
 		if (!$this->customer->isLogged()) {
 			$data['client_id'] = $this->config->get('module_pp_login_client_id');
-			$data['return_url'] = $this->url->link('extension/module/pp_login/login', '', true);
+			$data['return_url'] = $this->url->link('extension/module/pp_login/login');
 
 			if ($this->config->get('module_pp_login_sandbox')) {
 				$data['sandbox'] = 'sandbox';
@@ -58,7 +58,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 		$this->load->model('account/customer_group');
 
 		if ($this->customer->isLogged()) {
-			echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/account', '', true) . '"; window.close();</script>';
+			echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/account') . '"; window.close();</script>';
 		}
 
 		if (!isset($this->request->get['code'])) {
@@ -66,7 +66,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 				$this->model_extension_module_pp_login->log('No code returned. Error: ' . $this->request->get['error'] . ', Error Description: ' . $this->request->get['error_description']);
 			}
 
-			echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/login', '', true) . '"; window.close();</script>';
+			echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/login') . '"; window.close();</script>';
 		} else {
 			$tokens = $this->model_extension_module_pp_login->getTokens($this->request->get['code']);
 		}
@@ -83,7 +83,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 					$this->completeLogin($customer_info['customer_id'], $customer_info['email'], $tokens->access_token);
 				} else {
 					$this->model_extension_module_pp_login->log('Could not login to - ID: ' . $customer_info['customer_id'] . ', Email: ' . $customer_info['email']);
-					echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/login', '', true) . '"; window.close();</script>';
+					echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/login') . '"; window.close();</script>';
 				}
 			} else {
 				$country = $this->db->query("SELECT `country_id` FROM `" . DB_PREFIX . "country` WHERE iso_code_2 = '" . $this->db->escape($user->address->country) . "'");
@@ -111,8 +111,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 
 				$data = array(
 					'customer_group_id' => (int)$customer_group_id,
-					'firstname'         => $user->given_name,
-					'lastname'          => $user->family_name,
+					'fullname'         => $user->given_name . ' ' . $user->family_name,
 					'email'             => $user->email,
 					'telephone'         => $user->phone_number,
 					'password'          => uniqid(rand(), true),
@@ -133,7 +132,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 					$this->completeLogin($customer_id, $user->email, $tokens->access_token);
 				} else {
 					$this->model_extension_module_pp_login->log('Could not login to - ID: ' . $customer_id . ', Email: ' . $user->email);
-					echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/login', '', true) . '"; window.close();</script>';
+					echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/login') . '"; window.close();</script>';
 				}
 			}
 		}
@@ -169,7 +168,7 @@ class ControllerExtensionModulePPLogin extends Controller {
 		}
 
 		$this->model_extension_module_pp_login->log('Customer logged in - ID: ' . $customer_id . ', Email: ' . $email);
-		echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/account', '', true) . '"; window.close();</script>';
+		echo '<script type="text/javascript">window.opener.location = "' . $this->url->link('account/account') . '"; window.close();</script>';
 	}
 
 	protected function validate($email) {

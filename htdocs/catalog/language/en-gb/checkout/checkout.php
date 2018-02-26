@@ -1,23 +1,34 @@
 <?php
+/**
+ * description
+ *
+ * @copyright        2016 opencart.cn - All Rights Reserved
+ * @link             http://www.guangdawangluo.com
+ * @author           Sam Chen <sam.chen@opencart.cn>
+ * @created          2016-10-23 11:22:04
+ * @modified         2016-12-09 17:16:03
+ */
+
 // Heading
 $_['heading_title']                  = 'Checkout';
 
 // Text
 $_['text_cart']                      = 'Shopping Cart';
-$_['text_checkout_option']           = 'Step %s: Checkout Options';
-$_['text_checkout_account']          = 'Step %s: Account &amp; Billing Details';
-$_['text_checkout_payment_address']  = 'Step %s: Billing Details';
-$_['text_checkout_shipping_address'] = 'Step %s: Delivery Details';
-$_['text_checkout_shipping_method']  = 'Step %s: Delivery Method';
-$_['text_checkout_payment_method']   = 'Step %s: Payment Method';
-$_['text_checkout_confirm']          = 'Step %s: Confirm Order';
+$_['text_checkout_option']           = 'Checkout Options';
+$_['text_checkout_account']          = 'Account &amp; Billing Details';
+$_['text_checkout_payment_address']  = 'Billing Details';
+$_['text_checkout_shipping_address'] = 'Delivery Details';
+$_['text_checkout_shipping_method']  = 'Delivery Method';
+$_['text_checkout_payment_method']   = 'Payment Method';
+$_['text_checkout_confirm']          = 'Confirm Order';
+$_['text_checkout_cart']             = 'Shopping Cart';
 $_['text_modify']                    = 'Modify &raquo;';
 $_['text_new_customer']              = 'New Customer';
 $_['text_returning_customer']        = 'Returning Customer';
 $_['text_checkout']                  = 'Checkout Options:';
-$_['text_i_am_returning_customer']   = 'I am a returning customer';
-$_['text_register']                  = 'Register Account';
-$_['text_guest']                     = 'Guest Checkout';
+$_['text_i_am_returning_customer']   = 'Log In';
+$_['text_register']                  = 'Register';
+$_['text_guest']                     = 'Guest';
 $_['text_register_account']          = 'By creating an account you will be able to shop faster, be up to date on an order\'s status, and keep track of the orders you have previously made.';
 $_['text_forgotten']                 = 'Forgotten Password';
 $_['text_your_details']              = 'Your Personal Details';
@@ -39,6 +50,7 @@ $_['text_week']                      = 'week';
 $_['text_semi_month']                = 'half-month';
 $_['text_month']                     = 'month';
 $_['text_year']                      = 'year';
+$_['text_shipping_not_required']     = 'Shipping is not required for this order.';
 
 // Column
 $_['column_name']                    = 'Product Name';
@@ -55,6 +67,7 @@ $_['entry_confirm']                  = 'Password Confirm';
 $_['entry_firstname']                = 'First Name';
 $_['entry_lastname']                 = 'Last Name';
 $_['entry_telephone']                = 'Telephone';
+$_['entry_fax']                      = 'Fax';
 $_['entry_address']                  = 'Choose Address';
 $_['entry_company']                  = 'Company';
 $_['entry_customer_group']           = 'Customer Group';
@@ -65,7 +78,7 @@ $_['entry_city']                     = 'City';
 $_['entry_country']                  = 'Country';
 $_['entry_zone']                     = 'Region / State';
 $_['entry_newsletter']               = 'I wish to subscribe to the %s newsletter.';
-$_['entry_shipping']                 = 'My delivery and billing addresses are the same.';
+$_['entry_shipping'] 	             = 'My delivery and billing addresses are the same.';
 
 // Error
 $_['error_warning']                  = 'There was a problem while trying to process your order! If the problem persists please try selecting a different payment method or you can contact the store owner by <a href="%s">clicking here</a>.';
@@ -90,4 +103,6 @@ $_['error_shipping']                 = 'Warning: Shipping method required!';
 $_['error_no_shipping']              = 'Warning: No Shipping options are available. Please <a href="%s">contact us</a> for assistance!';
 $_['error_payment']                  = 'Warning: Payment method required!';
 $_['error_no_payment']               = 'Warning: No Payment options are available. Please <a href="%s">contact us</a> for assistance!';
+$_['error_payment_unavailable']      = 'Warning: Selected payment method is unavailable!';
+$_['error_shipping_unavailable']     = 'Warning: Selected shipping method is unavailable!';
 $_['error_custom_field']             = '%s required!';

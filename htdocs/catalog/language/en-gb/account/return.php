@@ -18,7 +18,7 @@ $_['text_status']        = 'Status:';
 $_['text_date_added']    = 'Date Added:';
 $_['text_comment']       = 'Return Comments';
 $_['text_history']       = 'Return History';
-$_['text_empty']         = 'You have not made any previous returns!';
+$_['text_no_results']    = 'You have not made any previous returns!';
 $_['text_agree']         = 'I have read and agree to the <a href="%s" class="agree"><b>%s</b></a>';
 
 // Column
@@ -39,8 +39,7 @@ $_['column_action']      = 'Action';
 // Entry
 $_['entry_order_id']     = 'Order ID';
 $_['entry_date_ordered'] = 'Order Date';
-$_['entry_firstname']    = 'First Name';
-$_['entry_lastname']     = 'Last Name';
+$_['entry_fullname']    = 'Full Name';
 $_['entry_email']        = 'E-Mail';
 $_['entry_telephone']    = 'Telephone';
 $_['entry_product']      = 'Product Name';
@@ -53,8 +52,7 @@ $_['entry_fault_detail'] = 'Faulty or other details';
 // Error
 $_['text_error']         = 'The returns you requested could not be found!';
 $_['error_order_id']     = 'Order ID required!';
-$_['error_firstname']    = 'First Name must be between 1 and 32 characters!';
-$_['error_lastname']     = 'Last Name must be between 1 and 32 characters!';
+$_['error_fullname']    = 'Full Name must be between 1 and 32 characters!';
 $_['error_email']        = 'E-Mail Address does not appear to be valid!';
 $_['error_telephone']    = 'Telephone must be between 3 and 32 characters!';
 $_['error_product']      = 'Product Name must be greater than 3 and less than 255 characters!';

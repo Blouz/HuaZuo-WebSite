@@ -9,7 +9,8 @@ $_['text_thanks']         = 'Thanks,';
 $_['text_new_customer']   = 'New customer';
 $_['text_signup']         = 'A new customer has signed up:';
 $_['text_customer_group'] = 'Customer Group:';
-$_['text_firstname']      = 'First Name:';
-$_['text_lastname']       = 'Last Name:';
+$_['text_fullname']      = 'Full Name:';
 $_['text_email']          = 'E-Mail:';
 $_['text_telephone']      = 'Telephone:';
+
+$_['button_login']           = 'Login';

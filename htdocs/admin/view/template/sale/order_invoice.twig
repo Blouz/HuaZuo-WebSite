@@ -45,24 +45,22 @@
         </tr>
       </tbody>
     </table>
+    {% if shipping_address %}
     <table class="table table-bordered">
       <thead>
         <tr>
-          <td style="width: 50%;"><b>{{ text_payment_address }}</b></td>
           <td style="width: 50%;"><b>{{ text_shipping_address }}</b></td>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td><address>
-            {{ order.payment_address }}
-            </address></td>
-          <td><address>
             {{ order.shipping_address }}
             </address></td>
         </tr>
       </tbody>
     </table>
+    {% endif %}
     <table class="table table-bordered">
       <thead>
         <tr>

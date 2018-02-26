@@ -18,8 +18,7 @@ $_['text_agree']                = 'I have read and agree to the <a href="%s" cla
 
 // Entry
 $_['entry_customer_group']      = 'Customer Group';
-$_['entry_firstname']           = 'First Name';
-$_['entry_lastname']            = 'Last Name';
+$_['entry_fullname']           = 'Full Name';
 $_['entry_email']               = 'E-Mail';
 $_['entry_telephone']           = 'Telephone';
 $_['entry_company']             = 'Company';
@@ -38,8 +37,7 @@ $_['entry_confirm']             = 'Password Confirm';
 
 // Error
 $_['error_exists']              = 'Warning: E-Mail Address is already registered!';
-$_['error_firstname']           = 'First Name must be between 1 and 32 characters!';
-$_['error_lastname']            = 'Last Name must be between 1 and 32 characters!';
+$_['error_fullname']           = 'Full Name must be between 1 and 32 characters!';
 $_['error_email']               = 'E-Mail Address does not appear to be valid!';
 $_['error_telephone']           = 'Telephone must be between 3 and 32 characters!';
 $_['error_custom_field']        = '%s required!';

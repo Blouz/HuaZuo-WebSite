@@ -27,13 +27,13 @@ $_['template_cache']     = true;
 
 // Autoload Libraries
 $_['library_autoload']   = array(
-	'openbay'
 );
 
 // Actions
 $_['action_pre_action']  = array(
 	'startup/session',
 	'startup/startup',
+	'startup/marketing',
 	'startup/error',
 	'startup/event',
 	'startup/maintenance',
@@ -59,7 +59,7 @@ $_['action_event'] = array(
 	//'view/*/before' => array(
 	//	1000  => 'event/debug/before'
 	//),
-	'controller/*/after'  => array(
-		'event/debug/after'
-	)
+	//'controller/*/after'  => array(
+	//	'event/debug/after'
+	//)
 );

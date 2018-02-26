@@ -1,10 +1,6 @@
 {{ header }}
 <div id="account-reset" class="container">
-  <ul class="breadcrumb">
-    {% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-    {% endfor %}
-  </ul>
+  {{ include('default/template/_partial/breadcrumb.twig') }}
   <div class="row">{{ column_left }}
     {% if column_left and column_right %}
     {% set class = 'col-sm-6' %}
@@ -36,10 +32,10 @@
           </div>
         </fieldset>
         <div class="buttons clearfix">
-          <div class="pull-left"><a href="{{ back }}" class="btn btn-default">{{ button_back }}</a></div>
           <div class="pull-right">
             <button type="submit" class="btn btn-primary">{{ button_continue }}</button>
           </div>
+          <div class="pull-left"><a href="{{ back }}" class="btn btn-default">{{ button_back }}</a></div>
         </div>
       </form>
       {{ content_bottom }}</div>

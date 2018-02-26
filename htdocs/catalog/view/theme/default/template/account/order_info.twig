@@ -1,10 +1,6 @@
 {{ header }}
 <div id="account-order" class="container">
-  <ul class="breadcrumb">
-    {% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-    {% endfor %}
-  </ul>
+  {{ include('default/template/_partial/breadcrumb.twig') }}
   {% if success %}
   <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -42,22 +38,20 @@
           </tr>
         </tbody>
       </table>
+      {% if shipping_address %}
       <table class="table table-bordered table-hover">
         <thead>
           <tr>
-            <td class="text-left" style="width: 50%; vertical-align: top;">{{ text_payment_address }}</td>
-            {% if shipping_address %}
             <td class="text-left" style="width: 50%; vertical-align: top;">{{ text_shipping_address }}</td>
-            {% endif %} </tr>
+          </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="text-left">{{ payment_address }}</td>
-            {% if shipping_address %}
             <td class="text-left">{{ shipping_address }}</td>
-            {% endif %} </tr>
+          </tr>
         </tbody>
       </table>
+      {% endif %}
       <div class="table-responsive">
         <table class="table table-bordered table-hover">
           <thead>
@@ -72,7 +66,6 @@
               {% endif %} </tr>
           </thead>
           <tbody>
-          
           {% for product in products %}
           <tr>
             <td class="text-left">{{ product.name }}
@@ -97,9 +90,7 @@
             {% endif %} </tr>
           {% endfor %}
             </tbody>
-          
           <tfoot>
-          
           {% for total in totals %}
           <tr>
             <td colspan="3"></td>
@@ -110,7 +101,6 @@
             {% endif %} </tr>
           {% endfor %}
             </tfoot>
-          
         </table>
       </div>
       {% if comment %}
@@ -138,7 +128,6 @@
           </tr>
         </thead>
         <tbody>
-        
         {% if histories %}
         {% for history in histories %}
         <tr>
@@ -153,12 +142,8 @@
         </tr>
         {% endif %}
           </tbody>
-        
       </table>
       {% endif %}
-      <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
-      </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>

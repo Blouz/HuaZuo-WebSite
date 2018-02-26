@@ -14,7 +14,7 @@ class ControllerExtensionThemeDefault extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=theme', true));
+			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=theme'));
 		}
 
 		if (isset($this->error['warning'])) {
@@ -45,6 +45,12 @@ class ControllerExtensionThemeDefault extends Controller {
 			$data['error_image_thumb'] = $this->error['image_thumb'];
 		} else {
 			$data['error_image_thumb'] = '';
+		}
+
+		if (isset($this->error['image_preview'])) {
+			$data['error_image_preview'] = $this->error['image_preview'];
+		} else {
+			$data['error_image_preview'] = '';
 		}
 
 		if (isset($this->error['image_popup'])) {
@@ -94,39 +100,39 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['error_image_location'] = '';
 		}
-		
+
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'])
 		);
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_extension'),
-			'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=theme', true)
+			'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=theme')
 		);
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/theme/default', 'user_token=' . $this->session->data['user_token'] . '&store_id=' . $this->request->get['store_id'], true)
+			'href' => $this->url->link('extension/theme/default', 'user_token=' . $this->session->data['user_token'] . '&store_id=' . $this->request->get['store_id'])
 		);
 
-		$data['action'] = $this->url->link('extension/theme/default', 'user_token=' . $this->session->data['user_token'] . '&store_id=' . $this->request->get['store_id'], true);
+		$data['action'] = $this->url->link('extension/theme/default', 'user_token=' . $this->session->data['user_token'] . '&store_id=' . $this->request->get['store_id']);
 
-		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=theme', true);
+		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=theme');
 
 		if (isset($this->request->get['store_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$setting_info = $this->model_setting_setting->getSetting('theme_default', $this->request->get['store_id']);
 		}
-		
+
 		if (isset($this->request->post['theme_default_directory'])) {
 			$data['theme_default_directory'] = $this->request->post['theme_default_directory'];
 		} elseif (isset($setting_info['theme_default_directory'])) {
 			$data['theme_default_directory'] = $setting_info['theme_default_directory'];
 		} else {
 			$data['theme_default_directory'] = 'default';
-		}		
+		}
 
 		$data['directories'] = array();
 
@@ -142,8 +148,8 @@ class ControllerExtensionThemeDefault extends Controller {
 			$data['theme_default_product_limit'] = $setting_info['theme_default_product_limit'];
 		} else {
 			$data['theme_default_product_limit'] = 15;
-		}		
-		
+		}
+
 		if (isset($this->request->post['theme_default_status'])) {
 			$data['theme_default_status'] = $this->request->post['theme_default_status'];
 		} elseif (isset($setting_info['theme_default_status'])) {
@@ -151,7 +157,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_status'] = '';
 		}
-		
+
 		if (isset($this->request->post['theme_default_product_description_length'])) {
 			$data['theme_default_product_description_length'] = $this->request->post['theme_default_product_description_length'];
 		} elseif (isset($setting_info['theme_default_product_description_length'])) {
@@ -159,15 +165,15 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_product_description_length'] = 100;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_category_width'])) {
 			$data['theme_default_image_category_width'] = $this->request->post['theme_default_image_category_width'];
 		} elseif (isset($setting_info['theme_default_image_category_width'])) {
 			$data['theme_default_image_category_width'] = $setting_info['theme_default_image_category_width'];
 		} else {
-			$data['theme_default_image_category_width'] = 80;		
+			$data['theme_default_image_category_width'] = 80;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_category_height'])) {
 			$data['theme_default_image_category_height'] = $this->request->post['theme_default_image_category_height'];
 		} elseif (isset($setting_info['theme_default_image_category_height'])) {
@@ -175,7 +181,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_category_height'] = 80;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_thumb_width'])) {
 			$data['theme_default_image_thumb_width'] = $this->request->post['theme_default_image_thumb_width'];
 		} elseif (isset($setting_info['theme_default_image_thumb_width'])) {
@@ -183,15 +189,31 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_thumb_width'] = 228;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_thumb_height'])) {
 			$data['theme_default_image_thumb_height'] = $this->request->post['theme_default_image_thumb_height'];
 		} elseif (isset($setting_info['theme_default_image_thumb_height'])) {
 			$data['theme_default_image_thumb_height'] = $setting_info['theme_default_image_thumb_height'];
 		} else {
-			$data['theme_default_image_thumb_height'] = 228;		
+			$data['theme_default_image_thumb_height'] = 228;
 		}
-		
+
+		if (isset($this->request->post['theme_default_image_preview_width'])) {
+			$data['theme_default_image_preview_width'] = $this->request->post['theme_default_image_preview_width'];
+		} elseif (isset($setting_info['theme_default_image_preview_width'])) {
+			$data['theme_default_image_preview_width'] = $setting_info['theme_default_image_preview_width'];
+		} else {
+			$data['theme_default_image_preview_width'] = 500;
+		}
+
+		if (isset($this->request->post['theme_default_image_preview_height'])) {
+			$data['theme_default_image_preview_height'] = $this->request->post['theme_default_image_preview_height'];
+		} elseif (isset($setting_info['theme_default_image_preview_height'])) {
+			$data['theme_default_image_preview_height'] = $setting_info['theme_default_image_preview_height'];
+		} else {
+			$data['theme_default_image_preview_height'] = 500;
+		}
+
 		if (isset($this->request->post['theme_default_image_popup_width'])) {
 			$data['theme_default_image_popup_width'] = $this->request->post['theme_default_image_popup_width'];
 		} elseif (isset($setting_info['theme_default_image_popup_width'])) {
@@ -199,7 +221,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_popup_width'] = 500;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_popup_height'])) {
 			$data['theme_default_image_popup_height'] = $this->request->post['theme_default_image_popup_height'];
 		} elseif (isset($setting_info['theme_default_image_popup_height'])) {
@@ -207,7 +229,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_popup_height'] = 500;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_product_width'])) {
 			$data['theme_default_image_product_width'] = $this->request->post['theme_default_image_product_width'];
 		} elseif (isset($setting_info['theme_default_image_product_width'])) {
@@ -215,7 +237,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_product_width'] = 228;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_product_height'])) {
 			$data['theme_default_image_product_height'] = $this->request->post['theme_default_image_product_height'];
 		} elseif (isset($setting_info['theme_default_image_product_height'])) {
@@ -223,7 +245,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_product_height'] = 228;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_additional_width'])) {
 			$data['theme_default_image_additional_width'] = $this->request->post['theme_default_image_additional_width'];
 		} elseif (isset($setting_info['theme_default_image_additional_width'])) {
@@ -231,7 +253,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_additional_width'] = 74;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_additional_height'])) {
 			$data['theme_default_image_additional_height'] = $this->request->post['theme_default_image_additional_height'];
 		} elseif (isset($setting_info['theme_default_image_additional_height'])) {
@@ -239,7 +261,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_additional_height'] = 74;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_related_width'])) {
 			$data['theme_default_image_related_width'] = $this->request->post['theme_default_image_related_width'];
 		} elseif (isset($setting_info['theme_default_image_related_width'])) {
@@ -247,7 +269,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_related_width'] = 80;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_related_height'])) {
 			$data['theme_default_image_related_height'] = $this->request->post['theme_default_image_related_height'];
 		} elseif (isset($setting_info['theme_default_image_related_height'])) {
@@ -255,7 +277,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_related_height'] = 80;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_compare_width'])) {
 			$data['theme_default_image_compare_width'] = $this->request->post['theme_default_image_compare_width'];
 		} elseif (isset($setting_info['theme_default_image_compare_width'])) {
@@ -263,7 +285,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_compare_width'] = 90;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_compare_height'])) {
 			$data['theme_default_image_compare_height'] = $this->request->post['theme_default_image_compare_height'];
 		} elseif (isset($setting_info['theme_default_image_compare_height'])) {
@@ -271,7 +293,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_compare_height'] = 90;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_wishlist_width'])) {
 			$data['theme_default_image_wishlist_width'] = $this->request->post['theme_default_image_wishlist_width'];
 		} elseif (isset($setting_info['theme_default_image_wishlist_width'])) {
@@ -279,7 +301,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_wishlist_width'] = 47;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_wishlist_height'])) {
 			$data['theme_default_image_wishlist_height'] = $this->request->post['theme_default_image_wishlist_height'];
 		} elseif (isset($setting_info['theme_default_image_wishlist_height'])) {
@@ -287,7 +309,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_wishlist_height'] = 47;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_cart_width'])) {
 			$data['theme_default_image_cart_width'] = $this->request->post['theme_default_image_cart_width'];
 		} elseif (isset($setting_info['theme_default_image_cart_width'])) {
@@ -295,7 +317,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_cart_width'] = 47;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_cart_height'])) {
 			$data['theme_default_image_cart_height'] = $this->request->post['theme_default_image_cart_height'];
 		} elseif (isset($setting_info['theme_default_image_cart_height'])) {
@@ -303,7 +325,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_cart_height'] = 47;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_location_width'])) {
 			$data['theme_default_image_location_width'] = $this->request->post['theme_default_image_location_width'];
 		} elseif (isset($setting_info['theme_default_image_location_width'])) {
@@ -311,7 +333,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_location_width'] = 268;
 		}
-		
+
 		if (isset($this->request->post['theme_default_image_location_height'])) {
 			$data['theme_default_image_location_height'] = $this->request->post['theme_default_image_location_height'];
 		} elseif (isset($setting_info['theme_default_image_location_height'])) {
@@ -319,7 +341,7 @@ class ControllerExtensionThemeDefault extends Controller {
 		} else {
 			$data['theme_default_image_location_height'] = 50;
 		}
-		
+
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -346,6 +368,10 @@ class ControllerExtensionThemeDefault extends Controller {
 
 		if (!$this->request->post['theme_default_image_thumb_width'] || !$this->request->post['theme_default_image_thumb_height']) {
 			$this->error['image_thumb'] = $this->language->get('error_image_thumb');
+		}
+
+		if (!$this->request->post['theme_default_image_preview_width'] || !$this->request->post['theme_default_image_preview_height']) {
+			$this->error['image_preview'] = $this->language->get('error_image_preview');
 		}
 
 		if (!$this->request->post['theme_default_image_popup_width'] || !$this->request->post['theme_default_image_popup_height']) {

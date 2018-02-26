@@ -31,7 +31,7 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_checkout'),
-			'href' => $this->url->link('checkout/checkout', '', true)
+			'href' => $this->url->link('checkout/checkout')
 		);
 
 		$data['breadcrumbs'][] = array(
@@ -48,13 +48,14 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 		$subject = trim($this->config->get('config_name'));
 		$currency = $this->config->get('payment_wechat_pay_currency');
 		$total_amount = trim($this->currency->format($order_info['total'], $currency, '', false));
-		$notify_url = HTTPS_SERVER . "payment_callback/wechat_pay"; //$this->url->link('wechat_pay/callback');
+		$notify_url = HTTP_SERVER . "payment_callback/wechat_pay"; //$this->url->link('wechat_pay/callback');
 
 		$options = array(
 			'appid'			 =>  $this->config->get('payment_wechat_pay_app_id'),
 			'appsecret'		 =>  $this->config->get('payment_wechat_pay_app_secret'),
 			'mch_id'			=>  $this->config->get('payment_wechat_pay_mch_id'),
-			'partnerkey'		=>  $this->config->get('payment_wechat_pay_api_secret')
+			'partnerkey'		=>  $this->config->get('payment_wechat_pay_api_secret'),
+			'cachepath'         =>  DIR_LOGS . 'wechat/'
 		);
 
 		\Wechat\Loader::config($options);
@@ -107,7 +108,8 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 			'appid'			 =>  $this->config->get('payment_wechat_pay_app_id'),
 			'appsecret'		 =>  $this->config->get('payment_wechat_pay_app_secret'),
 			'mch_id'			=>  $this->config->get('payment_wechat_pay_mch_id'),
-			'partnerkey'		=>  $this->config->get('payment_wechat_pay_api_secret')
+			'partnerkey'		=>  $this->config->get('payment_wechat_pay_api_secret'),
+			'cachepath'         =>  DIR_LOGS . 'wechat/'
 		);
 
 		\Wechat\Loader::config($options);
@@ -115,6 +117,7 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 		$notifyInfo = $pay->getNotify();
 
 		if ($notifyInfo === FALSE) {
+			echo \Wechat\Lib\Tools::arr2xml(['return_code' => 'FAIL', 'return_msg' => $pay->errMsg]);
 			$this->log->write('Wechat Pay Error: ' . $pay->errMsg);
 		} else {
 			if ($notifyInfo['result_code'] == 'SUCCESS' && $notifyInfo['return_code'] == 'SUCCESS') {
@@ -127,7 +130,7 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 						$this->model_checkout_order->addOrderHistory($order_id, $this->config->get('payment_wechat_pay_completed_status_id'));
 					}
 				}
-				return xml(['return_code' => 'SUCCESS', 'return_msg' => 'DEAL WITH SUCCESS']);
+				echo \Wechat\Lib\Tools::arr2xml(['return_code' => 'SUCCESS', 'return_msg' => 'DEAL WITH SUCCESS']);
 			}
 		}
 	}

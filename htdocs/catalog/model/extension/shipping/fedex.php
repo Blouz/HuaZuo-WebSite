@@ -47,11 +47,13 @@ class ModelExtensionShippingFedex extends Model {
 
 			$zone_info = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
 
-			if (!$this->config->get('shipping_fedex_test')) {
-				$url = 'https://gateway.fedex.com/web-services/';
+			if ($this->config->get('shipping_fedex_server') == 'gateway.fedex.com') {
+				$url = 'https://' . (!$this->config->get('shipping_fedex_test') ? 'gateway' : 'gatewaybeta') . '.fedex.com:443/web-services/';
 			} else {
-				$url = 'https://gatewaybeta.fedex.com/web-services/';
+				$url = 'https://' . (!$this->config->get('shipping_fedex_test') ? 'ws' : 'wsbeta') . '.fedex.com:443/web-services/';
 			}
+
+			$url = 'https://gatewaybeta.fedex.com/web-services/';
 
 			// Whoever introduced xml to shipping companies should be flogged
 			$xml  = '<?xml version="1.0"?>';
@@ -100,7 +102,7 @@ class ModelExtensionShippingFedex extends Model {
 
 			$xml .= '				<ns1:Recipient>';
 			$xml .= '					<ns1:Contact>';
-			$xml .= '						<ns1:PersonName>' . $address['firstname'] . ' ' . $address['lastname'] . '</ns1:PersonName>';
+			$xml .= '						<ns1:PersonName>' . get_firstname($address['fullname']) . ' ' . get_lastname($address['fullname']) . '</ns1:PersonName>';
 			$xml .= '						<ns1:CompanyName>' . $address['company'] . '</ns1:CompanyName>';
 			$xml .= '						<ns1:PhoneNumber>' . $this->customer->getTelephone() . '</ns1:PhoneNumber>';
 			$xml .= '					</ns1:Contact>';

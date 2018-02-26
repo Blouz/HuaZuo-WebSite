@@ -19,7 +19,7 @@ class ControllerCommonProfile extends Controller {
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->response->redirect($this->url->link('common/profile', 'user_token=' . $this->session->data['user_token'], true));
+			$this->response->redirect($this->url->link('common/profile', 'user_token=' . $this->session->data['user_token']));
 		}
 
 		if (isset($this->session->data['success'])) {
@@ -54,16 +54,10 @@ class ControllerCommonProfile extends Controller {
 			$data['error_confirm'] = '';
 		}
 
-		if (isset($this->error['firstname'])) {
-			$data['error_firstname'] = $this->error['firstname'];
+		if (isset($this->error['fullname'])) {
+			$data['error_fullname'] = $this->error['fullname'];
 		} else {
-			$data['error_firstname'] = '';
-		}
-
-		if (isset($this->error['lastname'])) {
-			$data['error_lastname'] = $this->error['lastname'];
-		} else {
-			$data['error_lastname'] = '';
+			$data['error_fullname'] = '';
 		}
 
 		if (isset($this->error['email'])) {
@@ -76,17 +70,17 @@ class ControllerCommonProfile extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'])
 		);
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('common/profile', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('common/profile', 'user_token=' . $this->session->data['user_token'])
 		);
 
-		$data['action'] = $this->url->link('common/profile', 'user_token=' . $this->session->data['user_token'], true);
+		$data['action'] = $this->url->link('common/profile', 'user_token=' . $this->session->data['user_token']);
 
-		$data['cancel'] = $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true);
+		$data['cancel'] = $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token']);
 
 		if ($this->request->server['REQUEST_METHOD'] != 'POST') {
 			$user_info = $this->model_user_user->getUser($this->user->getId());
@@ -112,20 +106,12 @@ class ControllerCommonProfile extends Controller {
 			$data['confirm'] = '';
 		}
 
-		if (isset($this->request->post['firstname'])) {
-			$data['firstname'] = $this->request->post['firstname'];
+		if (isset($this->request->post['fullname'])) {
+			$data['fullname'] = $this->request->post['fullname'];
 		} elseif (!empty($user_info)) {
-			$data['firstname'] = $user_info['firstname'];
+			$data['fullname'] = $user_info['fullname'];
 		} else {
-			$data['firstname'] = '';
-		}
-
-		if (isset($this->request->post['lastname'])) {
-			$data['lastname'] = $this->request->post['lastname'];
-		} elseif (!empty($user_info)) {
-			$data['lastname'] = $user_info['lastname'];
-		} else {
-			$data['lastname'] = '';
+			$data['fullname'] = '';
 		}
 
 		if (isset($this->request->post['email'])) {
@@ -175,15 +161,11 @@ class ControllerCommonProfile extends Controller {
 		$user_info = $this->model_user_user->getUserByUsername($this->request->post['username']);
 
 		if ($user_info && ($this->user->getId() != $user_info['user_id'])) {
-			$this->error['warning'] = $this->language->get('error_exists_username');
+			$this->error['warning'] = $this->language->get('error_username_exists');
 		}
 
-		if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
-			$this->error['firstname'] = $this->language->get('error_firstname');
-		}
-
-		if ((utf8_strlen(trim($this->request->post['lastname'])) < 1) || (utf8_strlen(trim($this->request->post['lastname'])) > 32)) {
-			$this->error['lastname'] = $this->language->get('error_lastname');
+		if ((utf8_strlen(trim($this->request->post['fullname'])) < 1) || (utf8_strlen(trim($this->request->post['fullname'])) > 32)) {
+			$this->error['fullname'] = $this->language->get('error_fullname');
 		}
 
 		if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
@@ -193,7 +175,7 @@ class ControllerCommonProfile extends Controller {
 		$user_info = $this->model_user_user->getUserByEmail($this->request->post['email']);
 
 		if ($user_info && ($this->user->getId() != $user_info['user_id'])) {
-			$this->error['warning'] = $this->language->get('error_exists_email');
+			$this->error['warning'] = $this->language->get('error_email_exists');
 		}
 
 		if ($this->request->post['password']) {

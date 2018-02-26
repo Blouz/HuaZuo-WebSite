@@ -8,16 +8,12 @@ $_['text_list']              = 'Product List';
 $_['text_add']               = 'Add Product';
 $_['text_edit']              = 'Edit Product';
 $_['text_filter']            = 'Filter';
-$_['text_plus']              = '+';
-$_['text_minus']             = '-';
 $_['text_default']           = 'Default';
-$_['text_option']            = 'Option';
-$_['text_option_value']      = 'Option Value';
-$_['text_percent']           = 'Percentage';
-$_['text_amount']            = 'Fixed Amount';
+$_['text_option']            = 'Options';
 $_['text_keyword']           = 'Do not use spaces, instead replace spaces with - and make sure the SEO URL is globally unique.';
 
 // Column
+$_['column_id']              = 'ID';
 $_['column_name']            = 'Product Name';
 $_['column_model']           = 'Model';
 $_['column_image']           = 'Image';
@@ -51,7 +47,6 @@ $_['entry_stock_status']     = 'Out Of Stock Status';
 $_['entry_price']            = 'Price';
 $_['entry_tax_class']        = 'Tax Class';
 $_['entry_points']           = 'Points';
-$_['entry_option_points']    = 'Points';
 $_['entry_subtract']         = 'Subtract Stock';
 $_['entry_weight_class']     = 'Weight Class';
 $_['entry_weight']           = 'Weight';
@@ -69,8 +64,6 @@ $_['entry_priority']         = 'Priority';
 $_['entry_attribute']        = 'Attribute';
 $_['entry_attribute_group']  = 'Attribute Group';
 $_['entry_text']             = 'Text';
-$_['entry_option']           = 'Option';
-$_['entry_option_value']     = 'Option Value';
 $_['entry_required']         = 'Required';
 $_['entry_status']           = 'Status';
 $_['entry_sort_order']       = 'Sort Order';
@@ -81,7 +74,8 @@ $_['entry_related']          = 'Related Products';
 $_['entry_tag']              = 'Product Tags';
 $_['entry_reward']           = 'Reward Points';
 $_['entry_layout']           = 'Layout Override';
-$_['entry_recurring']        = 'Recurring Profile';
+$_['text_image_yes']         = 'YES';
+$_['text_image_no']          = 'NO';
 
 // Help
 $_['help_sku']               = 'Stock Keeping Unit';

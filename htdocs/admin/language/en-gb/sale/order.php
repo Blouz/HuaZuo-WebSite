@@ -10,6 +10,10 @@ $_['text_edit']                  = 'Edit Order';
 $_['text_filter']                = 'Filter';
 $_['text_order_detail']          = 'Order Details';
 $_['text_customer_detail']       = 'Customer Details';
+$_['text_cart']                  = 'Shopping Cart';
+$_['text_payment_detail']        = 'Payment Details';
+$_['text_shipping_detail']       = 'Shipping Details';
+$_['text_total_detail']          = 'Total';
 $_['text_option']                = 'Options';
 $_['text_store']                 = 'Store';
 $_['text_date_added']            = 'Date Added';
@@ -60,6 +64,7 @@ $_['text_commission_removed']    = 'Success: Commission removed!';
 $_['text_restock']               = 'Success: Products have been restocked!';
 $_['text_upload']                = 'Your file was successfully uploaded!';
 $_['text_picklist']              = 'Dispatch Note';
+$_['text_reward']                = 'Reward Points';
 
 // Column
 $_['column_order_id']            = 'Order ID';
@@ -83,8 +88,7 @@ $_['column_weight']              = 'Product Weight';
 $_['entry_store']                = 'Store';
 $_['entry_customer']             = 'Customer';
 $_['entry_customer_group']       = 'Customer Group';
-$_['entry_firstname']            = 'First Name';
-$_['entry_lastname']             = 'Last Name';
+$_['entry_fullname']            = 'Full Name';
 $_['entry_email']                = 'E-Mail';
 $_['entry_telephone']            = 'Telephone';
 $_['entry_address']              = 'Choose Address';
@@ -119,8 +123,11 @@ $_['entry_voucher']              = 'Voucher';
 $_['entry_reward']               = 'Reward';
 $_['entry_order_id']             = 'Order ID';
 $_['entry_total']                = 'Total';
+$_['entry_total_format']         = '(Format: 10 or 10-20)';
 $_['entry_date_added']           = 'Date Added';
 $_['entry_date_modified']        = 'Date Modified';
+$_['entry_date_added_start']     = 'Date Added Start';
+$_['entry_date_added_end']       = 'Date Added End';
 
 // Help
 $_['help_override']              = 'If the customers order is being blocked from changing the order status due to an anti-fraud extension enable override.';

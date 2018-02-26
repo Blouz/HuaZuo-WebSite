@@ -177,7 +177,7 @@ class Squareup {
     public function authLink($client_id) {
         $state = $this->authState();
 
-        $redirect_uri = str_replace('&amp;', '&', $this->url->link('extension/payment/squareup/oauth_callback', 'user_token=' . $this->session->data['user_token'], true));
+        $redirect_uri = str_replace('&amp;', '&', $this->url->link('extension/payment/squareup/oauth_callback', 'user_token=' . $this->session->data['user_token']));
 
         $this->session->data['payment_squareup_oauth_redirect'] = $redirect_uri;
 
@@ -286,8 +286,8 @@ class Squareup {
             'endpoint' => self::ENDPOINT_CUSTOMERS,
             'auth_type' => 'Bearer',
             'parameters' => array(
-                'given_name' => $this->customer->getFirstName(),
-                'family_name' => $this->customer->getLastName(),
+                'given_name' => get_firstname($this->customer->getFullName()),
+                'family_name' => get_lastname($this->customer->getFullName()),
                 'email_address' => $this->customer->getEmail(),
                 'phone_number' => $this->customer->getTelephone(),
                 'reference_id' => $this->customer->getId()

@@ -1,0 +1,27 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="dbx-button-holder">
+			<img src="view/image/anyPort/dropbox-logo.png" alt="" width="130px">
+			<span id="showSelectedFile"></span>
+			<button class="btn btn-default btn-lg dbx-button-select" id="select-from-dropbox">Select File</button>
+			<input type="hidden" name="selectedFile" id="selectedFile" value="">
+			<input type="hidden" name="selectedFileSize" id="selectedFileSize" value="">
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	$('#select-from-dropbox').on('click', function(e){
+		e.preventDefault();
+		options = {
+			success: function(files) {
+				console.log(files[0])
+				$('#selectedFile').val(files[0].name);
+				$('#selectedFileSize').val(files[0].bytes);
+				$('#showSelectedFile').html(files[0].name);
+			},
+		}
+		Dropbox.choose(options);
+	});
+});
+</script>

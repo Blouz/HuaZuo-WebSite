@@ -1,0 +1,111 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-featured" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %} 
+					<li><a href="{{ breadcrumb.href }} ">{{ breadcrumb.text }} </a></li>
+        {% endfor %} 
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-featured" class="form-horizontal">
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-ftp-host">{{ entry_ftp_alias }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="alias" value="{{ alias }} " placeholder="{{ entry_ftp_alias }}" id="input-ftp-host" class="form-control" />
+                  {% if error_ftp_alias %}
+										<div class="text-danger">{{ error_ftp_alias }}</div>
+									{% endif %}
+									{% if error_alias_exist %}
+											<div class="text-danger">{{ error_alias_exist }}</div>
+									{% endif %}
+                </div>
+              </div>
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-ftp-host">{{ entry_ftp_host }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="host" value="{{ host }}" placeholder="{{ entry_ftp_host }}" id="input-ftp-host" class="form-control" />
+                  {% if error_ftp_host %}
+											<div class="text-danger">{{ error_ftp_host }}</div>
+									{% endif %}									
+                </div>
+              </div>
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-ftp-port">{{ entry_ftp_port }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="port" value="{% if port %} {{ port }} {% else %} '21' {% endif %}" placeholder="{{ entry_ftp_port }}" id="input-ftp-port" class="form-control" />
+                  {% if error_ftp_port %}
+											<div class="text-danger">{{ error_ftp_port }}</div>
+									{% endif %}
+                </div>
+              </div>
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-ftp-user">{{ entry_ftp_user }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="user" value="{{ user }}" placeholder="{{ entry_ftp_user }}" id="input-ftp-user" class="form-control" />
+                  {% if error_ftp_user %}
+											<div class="text-danger">{{ error_ftp_user }}</div>
+									{% endif %}									
+                </div>
+              </div>
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-ftp-pass">{{ entry_ftp_pass }}</label>
+                <div class="col-sm-10">
+                  <input type="password" name="pass" value="{{ pass }}" placeholder="{{ entry_ftp_pass }}" id="input-ftp-pass" class="form-control" />
+                  {% if error_ftp_pass %}
+											<div class="text-danger">{{ error_ftp_pass }}</div>
+									{% endif %}												
+                </div>
+              </div>
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-ftp-path"><span data-toggle="tooltip" data-html="true" title="{{ help_ftp_path|escape }}">{{ entry_ftp_path }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="path" value="{{ path }}" placeholder="{{ entry_ftp_path }}" id="input-ftp-path" class="form-control" />
+                  {% if error_ftp_path %}
+											<div class="text-danger">{{ error_ftp_path }}</div>
+									{% endif %}										
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-ftp-URL"><span data-toggle="tooltip" data-html="true" title="{{ help_ftp_URL|escape }}">{{ entry_ftp_URL }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="URL" value="{{ URL }}" placeholder="{{ entry_ftp_URL }}" id="input-ftp-URL" class="form-control" />
+                </div>
+              </div>                    
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_ftp_status }}</label>
+                <div class="col-sm-10">
+                  <label class="radio-inline">
+                    <input type="radio" name="status" value="1" {% if status==1 %}  checked="checked"  {% endif %} />
+                    {{ text_yes }}
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="status" value="0" {% if status==0 %}  checked="checked"  {% endif %} />
+                    {{ text_no }}
+                  </label>
+                </div>
+              </div>    
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

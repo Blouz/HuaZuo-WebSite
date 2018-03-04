@@ -1,0 +1,54 @@
+2018-03-04 2:30:23 - PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/wwwroot/www.testenv.com/system/library/db/mysqli.php on line 7
+2018-03-04 2:30:23 - PHP Warning:  DB\MySQLi::__construct(): Couldn't fetch mysqli in /home/wwwroot/www.testenv.com/system/library/db/mysqli.php on line 10
+2018-03-04 2:30:23 - PHP Warning:  DB\MySQLi::__construct(): Couldn't fetch mysqli in /home/wwwroot/www.testenv.com/system/library/db/mysqli.php on line 10
+2018-03-04 2:30:23 - PHP Notice:  Undefined variable: mysql in /home/wwwroot/www.testenv.com/install/controller/install/step_3.php on line 280
+2018-03-04 2:30:23 - PHP Notice:  Trying to get property of non-object in /home/wwwroot/www.testenv.com/install/controller/install/step_3.php on line 280
+2018-03-04 2:31:19 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/home/wwwroot) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 26
+2018-03-04 2:31:55 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:31:55 - PHP Warning:  is_dir(): open_basedir restriction in effect. File(/home/storage/testenv) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 63
+2018-03-04 2:32:12 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:32:25 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/home) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:32:25 - PHP Warning:  is_dir(): open_basedir restriction in effect. File(/home/storage/testenv) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 63
+2018-03-04 2:33:27 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/home) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:33:27 - PHP Warning:  is_dir(): open_basedir restriction in effect. File(/home/storage/testenv) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 63
+2018-03-04 2:33:35 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/home/wwwroot) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 26
+2018-03-04 2:33:48 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:33:52 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:35:33 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/home/wwwroot) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 26
+2018-03-04 2:35:58 - PHP Warning:  realpath(): open_basedir restriction in effect. File(/home/wwwroot) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 55
+2018-03-04 2:35:58 - PHP Warning:  is_dir(): open_basedir restriction in effect. File(/home/wwwroot/storage) is not within the allowed path(s): (/home/wwwroot/www.testenv.com:/tmp/:/var/tmp/:/proc/) in /home/wwwroot/www.testenv.com/admin/controller/common/security.php on line 63
+2018-03-04 2:49:16 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 378
+2018-03-04 2:49:16 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 378
+2018-03-04 2:49:16 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 378
+2018-03-04 2:49:16 - PHP Warning:  rmdir(/home/wwwroot/www.testenv.com/storage/upload/tmp-o66aK1znc3/): Directory not empty in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 400
+2018-03-04 2:50:56 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:50:56 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:50:56 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:50:56 - PHP Warning:  rmdir(/home/wwwroot/www.testenv.com/storage/upload/tmp-o66aK1znc3): Directory not empty in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 127
+2018-03-04 2:52:08 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:52:08 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/install.php on line 473
+2018-03-04 2:59:17 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:59:17 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:59:17 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:59:17 - PHP Warning:  rmdir(/home/wwwroot/www.testenv.com/storage/upload/tmp-o66aK1znc3): Directory not empty in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 127
+2018-03-04 2:59:36 - PHP Warning:  scandir() has been disabled for security reasons in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:59:36 - PHP Warning:  array_diff(): Argument #1 is not an array in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:59:36 - PHP Warning:  Invalid argument supplied for foreach() in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 106
+2018-03-04 2:59:36 - PHP Warning:  rmdir(/home/wwwroot/www.testenv.com/storage/upload/tmp-o66aK1znc3): Directory not empty in /home/wwwroot/www.testenv.com/admin/controller/marketplace/installer.php on line 127
+2018-03-04 3:52:29 - PHP Notice:  Undefined index: AnyPort in /home/wwwroot/www.testenv.com/admin/controller/extension/module/anyport.php on line 93

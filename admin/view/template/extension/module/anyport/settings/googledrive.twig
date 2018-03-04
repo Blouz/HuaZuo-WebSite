@@ -1,0 +1,118 @@
+<table class="table">
+	<tbody>
+		<tr>
+			<td class="col-xs-3">
+				<h5 class="option_title">{{ text_google_drive_enable }}</h5>
+                <span class="help"><i class="fa fa-info-circle"></i>&nbsp;
+                    {{ text_google_drive_enable_desc }} <a href="https://www.youtube.com/watch?v=SewWd2JyVns" target="_blank">here.</a>
+                </span>
+			</td>
+			<td class="col-xs-9">
+                <div class="col-xs-4">
+                    <select class="form-control" id="AnyPortGoogleDriveEnable" name="AnyPort[Settings][GoogleDrive][Enable]">
+                        <option value="1" {{ data.AnyPort.Settings.GoogleDrive.Enable == true ? ' selected="selected"' : '' }}>Yes</option>
+                        <option value="0" {{ data.AnyPort.Settings.GoogleDrive.Enable == false ? ' selected="selected"' : '' }}>No</option>
+                    </select>
+                </div>
+                <input type="hidden" name="AnyPort[Settings][GoogleAuthSettingsChanged]" value="0" id="AnyPortGoogleDriveSettingsChanged">
+            </td>
+		</tr>
+		 <tr>
+            <td class="col-xs-3"><h5 class="option_title">App key</h5></td>
+            <td class="col-xs-9">
+                <div class="col-xs-4">
+                    <input class="form-control" type="text" id="AnyPortGoogleDriveAppKey" name="AnyPort[Settings][GoogleDrive][AppKey]" value="{{ data.AnyPort.Settings.GoogleDrive.AppKey ? data.AnyPort.Settings.GoogleDrive.AppKey : '' }}" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-3"><h5 class="option_title">App secret</h5></td>
+            <td class="col-xs-9">
+                <div class="col-xs-4">
+                    <input class="form-control" type="text" id="AnyPortGoogleDriveAppSecret" name="AnyPort[Settings][GoogleDrive][AppSecret]" value="{{ data.AnyPort.Settings.GoogleDrive.AppSecret ? data.AnyPort.Settings.GoogleDrive.AppSecret : '' }}" />
+                </div>
+            </td>
+        </tr>
+
+         <tr>
+            <td class="col-xs-3"><h5 class="option_title">Google Picker API Key</h5></td>
+            <td class="col-xs-9">
+                <div class="col-xs-4">
+                    <input class="form-control" type="text" id="AnyPortGoogleDriveAppSecret" name="AnyPort[Settings][GoogleDrive][PickerKey]" value="{{ data.AnyPort.Settings.GoogleDrive.PickerKey ? data.AnyPort.Settings.GoogleDrive.PickerKey : '' }}" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-3"><h5 class="option_title">Google Drive Folder</h5>
+               <span class="help"><i class="fa fa-info-circle"></i>&nbsp;
+                    {{ text_google_drive_folder_dsec }}
+                </span>
+            </td>
+
+            <td class="col-xs-9">
+                <div class="col-xs-4">
+                    <input class="form-control" type="text" id="AnyPortGoogleDriveAppFolder" name="AnyPort[Settings][GoogleDrive][Folder]" value="{{ data.AnyPort.Settings.GoogleDrive.Folder ? data.AnyPort.Settings.GoogleDrive.Folder : '' }}" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-3"><h5 class="option_title">Redirect URL</h5></td>
+            <td class="col-xs-9">
+                <div class="col-xs-12">
+                    <a href="javascript:void(0)">{{ googleDriveCallback }}</a>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="col-xs-3"><h5 class="option_title">GoogleDrive account status</h5></td>
+            <td class="col-xs-9">
+                <div class="col-xs-4">
+                    <span id="google-reconfirm-app" style="display:none" class="changed-credentials">{{ text_google_drive_acc_status }}</span>
+                    <button id="confirmGoogleDrive" class="btn btn-primary">Confirm GoogleDrive App</button>
+                    <div id="show-google-drive-activated">
+                        <span class="label label-success" id="google-drive-activated"></span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+	</tbody>
+</table>
+<script>
+
+    var gDriveAuthentication = "{{ google_drive_notice }}"
+    var enabled = $('#AnyPortGoogleDriveEnable').val();
+    var apiKey = $('#AnyPortGoogleDriveAppKey').val();
+    var apiSecret = $('#AnyPortGoogleDriveAppSecret').val();
+    var workingFolder = "{{ data.AnyPort.Settings.GoogleDrive.Folder }}";
+
+    if (enabled == '1') {
+        if(gDriveAuthentication == '') {
+            $('#show-google-drive-activated').show();
+            $('#google-drive-activated').html('Google Drive activated');
+            $('#confirmGoogleDrive').hide();
+        } else if (apiKey != '' && apiSecret != '' && workingFolder != '') {
+            $('#confirmGoogleDrive').show();
+        }
+    }
+
+    $('#AnyPortGoogleDriveAppKey, #AnyPortGoogleDriveAppSecret').change(function(){
+        if ($('#AnyPortGoogleDriveAppKey').val() == '{{ data.AnyPort.Settings.GoogleDrive.AppKey }}' && $('#AnyPortGoogleDriveAppSecret').val() == '{{ data.AnyPort.Settings.GoogleDrive.AppSecret }}') {
+            $('#AnyPortGoogleDriveSettingsChanged').val('0');
+        } else {
+            $('#google-reconfirm-app').css('display','block');
+            $('#AnyPortGoogleDriveSettingsChanged').val('1');
+            $('#google-drive-activated').hide();
+            $('#confirmGoogleDrive').show();
+        }
+
+    });
+
+    $('#confirmGoogleDrive').click(function(e){
+
+        e.preventDefault();
+        $('#AnyPortGoogleDriveSettingsChanged').val('0');
+        if (anyportDrivePopup != null) { anyportDrivePopup.close(); anyportDrivePopup = null; }
+        anyportDrivePopup = window.open('../{{ anyport_admin_folder_name }}/index.php?route={{ module_path }}/googleDrive&page=popup&user_token={{user_token}}&appKey='+ $('#AnyPortGoogleDriveAppKey').val() +'&appSecret='+$('#AnyPortGoogleDriveAppSecret').val()+'&appFolder='+$('#AnyPortGoogleDriveAppFolder').val(), '_blank', 'location=no,width=1000,height=620,resizable=no');
+    });
+</script>

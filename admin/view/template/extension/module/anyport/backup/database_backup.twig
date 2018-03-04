@@ -1,0 +1,47 @@
+<table class="tableWrapper">
+	<tr>
+		<td valign="top">
+    		<ul class="databaseTablesList">
+    		<li class="sectionHeading">
+                <h2>{{ text_select_tables }}</h2>
+            </li>
+				{% for i,tableName in tables_to_backup %}
+					{% set className = ' allTable' %}
+					{% set found = false %}
+					{% set break = false %}
+					{% for category in tables_to_backup %}
+						{% if category in tableName == 0 and not break %}
+							{% set className = ' ' ~ category ~ 'Table' %}
+							{% set found = true %}
+							{% set break = true %}
+						{% endif %}
+					{% endfor %}
+					{% if found == false %}
+						{% set className = ' otherTable'%}
+					{% endif %}
+		        <li>
+                	<div class="tableName{{ className }}">
+                    	<input type="checkbox" class="select-table" value="{{ tableName }}" id="BackupTable{{ i }}" name="AnyPort[Backup][Tables][BackupTable{{ i }}]" />
+                        <label for="BackupTable{{ i }}">{{ tableName }}</label>
+		            </div>
+               	</li>
+            	{% endfor %}
+                <li class="actionButtons">
+                	<a href="javascript:void(0)" class="selectAllTables btn btn-success">Select All</a>
+					<a href="javascript:void(0)" class="deselectAllTables btn btn-warning">Deselect All</a>
+                </li>
+    		</ul>
+    	</td>
+	</tr>
+</table>
+
+<script>
+	$('.selectAllTables').click(function() {
+		$('input[class*=\'select-table\']').attr('checked', true);
+	});
+
+	$('.deselectAllTables').click(function() {
+		$('input[class*=\'select-table\']').attr('checked', false);
+	});
+
+</script>

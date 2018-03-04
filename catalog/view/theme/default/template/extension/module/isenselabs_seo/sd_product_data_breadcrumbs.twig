@@ -1,0 +1,62 @@
+{% if product_data %}
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Product",
+    {% if image %}"image": "{{ seodata.image }}",{% endif %}    
+    "name": "{{ name }}",
+    "model": "{{ model }}",
+    "url": "{{ url }}",
+    "description": "{{ description}}",
+    "brand": {
+        "@type": "Thing",
+        "name": "{{ manufacturer }}"
+    },
+    "offers": {
+        "@type": "Offer",
+        "priceCurrency": "{{ currency_code }}",
+        "price": "{{ price }}",
+    {% if quantity > 0 %}
+        "availability": "http://schema.org/InStock"
+    {% else %}
+        "availability": "http://schema.org/OutOfStock"
+    {% endif %}
+    }
+    {% if review_count > 0 %},
+    "aggregateRating": {
+        "@type": "aggregateRating",
+        "ratingValue": "{{ rating }}",
+        "reviewCount": "{{ review_count }}",
+        "bestRating": "5",
+        "worstRating" : "1"
+    }
+    {% endif %}
+}
+</script>
+{% endif %}
+
+{% if product_breadcrumbs %}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+  
+  {% for index, breadcrumb in breadcrumbs %}
+  {
+    "@type": "ListItem",
+    "position": {{ index+1 }},
+    "item": {
+      "@id": "{{ breadcrumb.href }}",
+      "name": "{{ breadcrumb.name}}"
+    }
+  }   
+  {% if loop.last %}
+  ]
+  {% else %}
+  ,
+  {% endif %}
+  {% endfor %}
+}
+</script>
+{% endif %}

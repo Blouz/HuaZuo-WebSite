@@ -1,0 +1,94 @@
+<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+<div class="row">
+  <div class="col-md-12">
+    <div class="gd-button-holder">
+      <img src="view/image/anyPort/google-drive-logo.png" alt="" width="130px">
+      <span id="showSelectedFile"></span>
+      <button class="btn btn-default btn-lg gd-button-select" id="pick-from-gdrive">Select File</button>
+      <input type="hidden" name="selected-drive-file" id="selected-drive-file" value="">
+      <input type="hidden" name="selected-file-size" id="selected-file-size" value="">
+      <input type="hidden" name="selected-file-id" id="selected-file-id" value="">
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+    	$('#pick-from-gdrive').on('click', function(e){
+    		e.preventDefault();
+
+    		loadPicker();
+    	});
+    });
+
+    // The Browser API key obtained from the Google Developers Console.
+    var developerKey = '{{ developerKey }}';
+    // The Client ID obtained from the Google Developers Console. Replace with your own Client ID.
+    var clientId = "{{ googleClientId }}"
+    // Replace with your own App ID. (Its the first number in your Client ID)
+    var appId = "{{ appId }}";
+    // Scope to use to access user's Drive items.
+    var scope = ['https://www.googleapis.com/auth/drive'];
+
+    var pickerApiLoaded = false;
+    var oauthToken;
+
+    // Use the Google API Loader script to load the google.picker script.
+    function loadPicker() {
+      gapi.load('auth', {'callback': onAuthApiLoad});
+      gapi.load('picker', {'callback': onPickerApiLoad});
+    }
+
+    function onAuthApiLoad() {
+      window.gapi.auth.authorize(
+          {
+            'client_id': clientId,
+            'scope': scope,
+            'immediate': false
+          },
+          handleAuthResult);
+    }
+
+    function onPickerApiLoad() {
+      pickerApiLoaded = true;
+      createPicker();
+    }
+
+    function handleAuthResult(authResult) {
+      if (authResult && !authResult.error) {
+        oauthToken = authResult.access_token;
+        createPicker();
+      }
+    }
+
+    // Create and render a Picker object for searching images.
+    function createPicker() {
+      if (pickerApiLoaded && oauthToken) {
+        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        view.setMimeTypes("application/zip,application/tar");
+        var picker = new google.picker.PickerBuilder()
+            .enableFeature(google.picker.Feature.NAV_HIDDEN)
+            .setAppId(appId)
+            .setOAuthToken(oauthToken)
+            .addView(view)
+            .addView(new google.picker.DocsUploadView())
+            .setDeveloperKey(developerKey)
+            .setCallback(pickerCallback)
+            .build();
+         picker.setVisible(true);
+      }
+    }
+
+    // A simple callback implementation.
+    function pickerCallback(data) {
+      if (data.action == google.picker.Action.PICKED) {
+        var name   = data.docs[0].name;
+        var fileId = data.docs[0].id;
+        var size   = data.docs[0].sizeBytes;
+        $('#showSelectedFile').html(name);
+        $('#selected-drive-file').val(name);
+        $('#selected-file-size').val(size);
+        $('#selected-file-id').val(fileId);
+
+      }
+    }
+    </script>

@@ -1,0 +1,28 @@
+<div id="autoBackupPage">
+    <input type="hidden" name="AnyPort[AutoBackup][AdminFolder]" value="{{ anyport_admin_folder_name }}">
+    <div class="col-xs-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="active"><a href="#dropbox-auto-backup" data-toggle="tab"><i class="fa fa-chevron-circle-right"></i>&nbsp{{ text_dropbox_auto_backup }}</a></li>
+            <li><a href="#google-drive-auto-backup" data-toggle="tab"><i class="fa fa-chevron-circle-right"></i>&nbsp{{ text_google_drive_auto_backup }}</a></li>
+        </ul>
+    </div>
+    <!-- <div style="padding:0 10px 0 10px;"> -->
+    <div class="col-xs-10">
+        <div class="tab-content">
+            <div id="dropbox-auto-backup" class="tab-pane active">
+                {{ dropbox_auto_backup }}
+            </div>
+            <div id="google-drive-auto-backup" class="tab-pane">
+                {{ google_drive_auto_backup }}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var token = '';
+    var vars = window.location.search.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var parts = vars[i].split('=');
+        if (parts[0] == 'token') token = parts[1];
+    }
+</script>

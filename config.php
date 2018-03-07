@@ -1,9 +1,9 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://myhuazuo.com/');
+define('HTTP_SERVER', 'http://www.myhuazuo.com/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://myhuazuo.com/');
+define('HTTPS_SERVER', 'http://www.myhuazuo.com/');
 
 // DIR
 define('DIR_APPLICATION', '/home/wwwroot/www.myhuazuo.com/catalog/');
@@ -24,7 +24,7 @@ define('DIR_UPLOAD', DIR_STORAGE . 'upload/');
 define('DB_DRIVER', 'mysqli');
 define('DB_HOSTNAME', 'localhost');
 define('DB_USERNAME', 'root');
-define('DB_PASSWORD', 'mypassw0rd');
+define('DB_PASSWORD', 'Mypassword');
 define('DB_DATABASE', 'HuaZuoDB');
 define('DB_PORT', '3306');
 define('DB_PREFIX', 'oc_');

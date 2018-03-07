@@ -540,6 +540,28 @@ class ControllerCommonColumnLeft extends Controller {
 			
 			// Tax		
 			$tax = array();
+
+                $this->load->model('extension/module/city');
+        
+                $existed = $this->model_extension_module_city->CheckInstall();
+		                
+                if ($this->user->hasPermission('access', 'extension/module/city')) {
+                    if($existed){
+                            $localisation[] = array(
+                                            'name'	   => "Cities",
+                                            'href'     => $this->url->link('extension/module/city', 'user_token=' . $this->session->data['user_token'], true),
+                                            'children' => array()
+                            );
+                    } else {
+                     $localisation[] = array(
+                                            'name'	   => "Install Cities Module",
+                                            'href'     => $this->url->link('extension/module/city/install', 'user_token=' . $this->session->data['user_token'], true),
+                                            'children' => array()
+                            );
+                    }
+                }
+                
+            
 			
 			if ($this->user->hasPermission('access', 'localisation/tax_class')) {
 				$tax[] = array(

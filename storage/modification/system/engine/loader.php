@@ -18,6 +18,17 @@ final class Loader {
 	 *
 	 * @param	object	$registry
  	*/
+
+                /* Journal2 modification */
+                public function __get($key) {
+                    return $this->registry->get($key);
+                }
+
+                public function __set($key, $value) {
+                    $this->registry->set($key, $value);
+                }
+                /* End of Journal2 modification */
+            
 	public function __construct($registry) {
 		$this->registry = $registry;
 	}

@@ -73,7 +73,7 @@ class ControllerCheckoutCart extends Controller {
 				if ($product['image']) {
 					$image = $this->model_tool_image->resize($product['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_height'));
 				} else {
-					$image = '';
+					$image = $this->model_tool_image->resize('no_image.png', $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
 				}
 
 				$option_data = array();
@@ -336,6 +336,12 @@ class ControllerCheckoutCart extends Controller {
 			if (!$json) {
 				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);
 
+
+                if (strpos($this->config->get('config_template'), 'journal2') === 0) {
+                    $this->load->model('tool/image');
+                    $json['image'] = Journal2Utils::resizeImage($this->model_tool_image, $product_info['image'], $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
+                }
+            
 				$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
 
 				// Unset all shipping and payment methods

@@ -36,6 +36,15 @@ final class Twig {
 		}
 
 		$this->twig = new \Twig_Environment($loader, $config);
+
+                $this->twig->addFunction('staticCall', new \Twig_Function_Function(function ($class, $function, $args = array()) {
+                    if (class_exists($class) && method_exists($class, $function)) {
+                        return call_user_func_array(array($class, $function), $args);
+                    }
+
+                    return null;
+                }));
+            
 		
 		try {
 			// load template

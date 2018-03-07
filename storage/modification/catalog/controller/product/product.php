@@ -168,6 +168,9 @@ class ControllerProductProduct extends Controller {
 
 		$this->load->model('catalog/product');
 
+                $this->load->model('journal2/product');
+            
+
 		$product_info = $this->model_catalog_product->getProduct($product_id);
 
 		if ($product_info) {
@@ -256,12 +259,42 @@ class ControllerProductProduct extends Controller {
         // >> Parent-child Options
       
 			$data['manufacturer'] = $product_info['manufacturer'];
+
+			if (strpos($this->config->get('config_template'), 'journal2') === 0) {
+			    $this->load->model('catalog/manufacturer');
+			    $data['text_manufacturer'] = $this->language->get('text_manufacturer');
+                $manufacturer_info = $this->model_catalog_manufacturer->getManufacturer($product_info['manufacturer_id']);
+                if ($manufacturer_info && $manufacturer_info['image'] && $this->journal2->settings->get('manufacturer_image', '0') == '1') {
+                    $this->journal2->settings->set('manufacturer_image', 'on');
+                    $data['manufacturer_image_width'] = $this->journal2->settings->get('manufacturer_image_width', 100);
+                    $data['manufacturer_image_height'] = $this->journal2->settings->get('manufacturer_image_height', 100);
+                    $data['manufacturer_image'] = Journal2Utils::resizeImage($this->model_tool_image, $manufacturer_info['image'], $data['manufacturer_image_width'], $data['manufacturer_image_height']);
+                    switch ($this->journal2->settings->get('manufacturer_image_additional_text', 'none')) {
+                        case 'brand':
+                            $data['manufacturer_image_name'] = $product_info['manufacturer'];
+                            break;
+                        case 'custom':
+                            $data['manufacturer_image_name'] = $this->journal2->settings->get('manufacturer_image_custom_text');
+                            break;
+                    }
+                }
+			}
+            
 			$data['manufacturers'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
 			$data['model'] = $product_info['model'];
 			$data['reward'] = $product_info['reward'];
 			$data['points'] = $product_info['points'];
 			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 
+
+                if (true && $product_info['quantity'] <= 0) {
+                    $data['stock_status'] = 'outofstock';
+                }
+                if (true && $product_info['quantity'] > 0) {
+                    $data['stock_status'] = 'instock';
+                }
+                $data['labels'] = $this->model_journal2_product->getLabels($product_info['product_id']);
+            
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
 			} elseif ($this->config->get('config_stock_display')) {
@@ -275,13 +308,13 @@ class ControllerProductProduct extends Controller {
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
 			} else {
-				$data['popup'] = '';
+				$data['popup'] = $this->model_tool_image->resize('no_image.png', $this->config->get('config_image_popup_width'), $this->config->get('config_image_popup_height'));
 			}
 
 			if ($product_info['image']) {
 				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height'));
 			} else {
-				$data['thumb'] = '';
+				$data['thumb'] = $this->model_tool_image->resize('no_image.png', $this->config->get('config_image_thumb_width'), $this->config->get('config_image_thumb_height'));
 			}
 
 			$data['images'] = array();
@@ -320,6 +353,16 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if ((float)$product_info['special']) {
+
+                if (strpos($this->config->get('config_template'), 'journal2') === 0 && $this->journal2->settings->get('show_countdown_product_page', 'on') == 'on') {
+                    $this->load->model('journal2/product');
+                    $date_end = $this->model_journal2_product->getSpecialCountdown($this->request->get['product_id']);
+                    if ($date_end === '0000-00-00') {
+                        $date_end = false;
+                    }
+                    $data['date_end'] = $date_end;
+                }
+            
 				$data['special'] = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
 			} else {
 				$data['special'] = false;
@@ -370,7 +413,7 @@ class ControllerProductProduct extends Controller {
 							'product_option_value_id' => $option_value['product_option_value_id'],
 							'option_value_id'         => $option_value['option_value_id'],
 							'name'                    => $option_value['name'],
-							'image'                   => $this->model_tool_image->resize($option_value['image'], 50, 50),
+							'image'                   => strpos($this->config->get('config_template'), 'journal2') === 0 && $option_value['image'] && is_file(DIR_IMAGE . $option_value['image']) ? Journal2Utils::resizeImage($this->model_tool_image, $option_value['image'], $this->journal2->settings->get('product_page_options_push_image_width', 30), $this->journal2->settings->get('product_page_options_push_image_height', 30), 'crop') : $this->model_tool_image->resize($option_value['image'], 50, 50),
 							'price'                   => $price,
 							'price_prefix'            => $option_value['price_prefix']
 						);
@@ -462,6 +505,25 @@ class ControllerProductProduct extends Controller {
 					$rating = false;
 				}
 
+
+                $date_end = false;
+                if (strpos($this->config->get('config_template'), 'journal2') === 0 && $special && $this->journal2->settings->get('show_countdown', 'never') !== 'never') {
+                    $this->load->model('journal2/product');
+                    $date_end = $this->model_journal2_product->getSpecialCountdown($result['product_id']);
+                    if ($date_end === '0000-00-00') {
+                        $date_end = false;
+                    }
+                }
+            
+
+                $additional_images = $this->model_catalog_product->getProductImages($result['product_id']);
+
+                $image2 = false;
+
+                if (count($additional_images) > 0) {
+                    $image2 = $this->model_tool_image->resize($additional_images[0]['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
+                }
+            
 				$data['products'][] = array(
 
 				// << Product Option Image PRO module
@@ -470,10 +532,19 @@ class ControllerProductProduct extends Controller {
       
 					'product_id'  => $result['product_id'],
 					'thumb'       => $image,
+
+                'thumb2'       => $image2,
+            
+
+                'labels'        => $this->model_journal2_product->getLabels($result['product_id']),
+            
 					'name'        => $result['name'],
 					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
 					'price'       => $price,
 					'special'     => $special,
+
+                'date_end'       => $date_end,
+            
 					'tax'         => $tax,
 					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
 					'rating'      => $rating,

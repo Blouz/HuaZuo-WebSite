@@ -36,6 +36,10 @@ class ModelSettingModule extends Model {
 	}	
 	
 	public function deleteModulesByCode($code) {
+		if (strpos($code, 'journal2_') === 0) {
+			return;
+		}
+
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "module` WHERE `code` = '" . $this->db->escape($code) . "'");
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "layout_module` WHERE `code` LIKE '" . $this->db->escape($code) . "' OR `code` LIKE '" . $this->db->escape($code . '.%') . "'");
 	}	

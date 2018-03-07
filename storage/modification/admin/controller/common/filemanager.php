@@ -103,9 +103,9 @@ class ControllerCommonFileManager extends Controller {
 
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
-			$directory = rtrim(DIR_IMAGE . 'catalog/' . str_replace('*', '', $this->request->get['directory']), '/');
+			$directory = rtrim(DIR_IMAGE . '/' . str_replace('*', '', $this->request->get['directory']), '/');
 		} else {
-			$directory = DIR_IMAGE . 'catalog';
+			$directory = DIR_IMAGE . '';
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -121,7 +121,7 @@ class ControllerCommonFileManager extends Controller {
 
 		$this->load->model('tool/image');
 
-		if (substr(str_replace('\\', '/', realpath($directory) . '/' . $filter_name), 0, strlen(DIR_IMAGE . 'catalog')) == str_replace('\\', '/', DIR_IMAGE . 'catalog')) {
+		if (substr(str_replace('\\', '/', realpath($directory) . '/' . $filter_name), 0, strlen(DIR_IMAGE . '')) == str_replace('\\', '/', DIR_IMAGE . '')) {
 			// Get directories
 			$directories = glob($directory . '/' . $filter_name . '*', GLOB_ONLYDIR);
 
@@ -147,6 +147,12 @@ class ControllerCommonFileManager extends Controller {
 		$images = array_splice($images, ($page - 1) * 16, 16);
 
 		foreach ($images as $image) {
+
+            // Ignore cache, flags and templates directories
+			if (strpos($image, DIR_IMAGE . '/cache') === 0 || strpos($image, DIR_IMAGE . '/flags') === 0 || strpos($image, DIR_IMAGE . '/templates') === 0 || strpos($image, DIR_IMAGE . '/payment') === 0) {
+				continue;
+			}
+            
 			$name = str_split(basename($image), 14);
 
 			if (is_dir($image)) {
@@ -165,9 +171,23 @@ class ControllerCommonFileManager extends Controller {
 					'name'  => implode(' ', $name),
 					'type'  => 'directory',
 					'path'  => utf8_substr($image, utf8_strlen(DIR_IMAGE)),
-					'href'  => $this->url->link('common/filemanager', 'user_token=' . $this->session->data['user_token'] . '&directory=' . urlencode(utf8_substr($image, utf8_strlen(DIR_IMAGE . 'catalog/'))) . $url, true)
+					'href'  => $this->url->link('common/filemanager', 'user_token=' . $this->session->data['user_token'] . '&directory=' . urlencode(utf8_substr($image, utf8_strlen(DIR_IMAGE . '/'))) . $url, true)
 				);
 			} elseif (is_file($image)) {
+
+                $start_slash = strpos($image, '//') === 0;
+
+                $image = trim($image, '/');
+
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    $image = str_replace('//', '/', $image);
+
+                }
+
+                if ($start_slash) {
+                    $image = '//' . $image;
+                }
+            
 				$data['images'][] = array(
 					'thumb' => $this->model_tool_image->resize(utf8_substr($image, utf8_strlen(DIR_IMAGE)), 100, 100),
 					'name'  => implode(' ', $name),
@@ -262,6 +282,17 @@ class ControllerCommonFileManager extends Controller {
 			$url .= '&thumb=' . $this->request->get['thumb'];
 		}
 
+
+                $data['is_ajax'] = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+				$data['ckeditor'] = isset($_GET['CKEditorFuncNum']) ? $_GET['CKEditorFuncNum'] : null;
+				$data['imgpath'] = HTTP_CATALOG . 'image/';
+				$data['base'] = $_SERVER['HTTPS'] ? HTTPS_SERVER : HTTP_SERVER;
+				$data['params'] = http_build_query(array(
+					'CKEditor' 			=> isset($_GET['CKEditor']) ? $_GET['CKEditor'] : null,
+					'CKEditorFuncNum' 	=> isset($_GET['CKEditorFuncNum']) ? $_GET['CKEditor'] : null,
+					'langCode'			=> isset($_GET['langCode']) ? $_GET['langCode'] : null
+				));
+            
 		$pagination = new Pagination();
 		$pagination->total = $image_total;
 		$pagination->page = $page;
@@ -285,13 +316,13 @@ class ControllerCommonFileManager extends Controller {
 
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
-			$directory = rtrim(DIR_IMAGE . 'catalog/' . $this->request->get['directory'], '/');
+			$directory = rtrim(DIR_IMAGE . '/' . $this->request->get['directory'], '/');
 		} else {
-			$directory = DIR_IMAGE . 'catalog';
+			$directory = DIR_IMAGE . '';
 		}
 
 		// Check its a directory
-		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen(DIR_IMAGE . 'catalog')) != str_replace('\\', '/', DIR_IMAGE . 'catalog')) {
+		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen(DIR_IMAGE . '')) != str_replace('\\', '/', DIR_IMAGE . '')) {
 			$json['error'] = $this->language->get('error_directory');
 		}
 
@@ -380,13 +411,13 @@ class ControllerCommonFileManager extends Controller {
 
 		// Make sure we have the correct directory
 		if (isset($this->request->get['directory'])) {
-			$directory = rtrim(DIR_IMAGE . 'catalog/' . $this->request->get['directory'], '/');
+			$directory = rtrim(DIR_IMAGE . '/' . $this->request->get['directory'], '/');
 		} else {
-			$directory = DIR_IMAGE . 'catalog';
+			$directory = DIR_IMAGE . '';
 		}
 
 		// Check its a directory
-		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen(DIR_IMAGE . 'catalog')) != str_replace('\\', '/', DIR_IMAGE . 'catalog')) {
+		if (!is_dir($directory) || substr(str_replace('\\', '/', realpath($directory)), 0, strlen(DIR_IMAGE . '')) != str_replace('\\', '/', DIR_IMAGE . '')) {
 			$json['error'] = $this->language->get('error_directory');
 		}
 
@@ -561,7 +592,7 @@ class ControllerCommonFileManager extends Controller {
 		// Loop through each path to run validations
 		foreach ($paths as $path) {
 			// Check path exsists
-			if ($path == DIR_IMAGE . 'catalog' || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $path)), 0, strlen(DIR_IMAGE . 'catalog')) != str_replace('\\', '/', DIR_IMAGE . 'catalog')) {
+			if ($path == DIR_IMAGE . '' || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $path)), 0, strlen(DIR_IMAGE . '')) != str_replace('\\', '/', DIR_IMAGE . '')) {
 				$json['error'] = $this->language->get('error_delete');
 
 				break;

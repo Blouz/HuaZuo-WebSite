@@ -112,6 +112,34 @@ class Response {
  	*/
 	public function output() {
 		if ($this->output) {
+
+                if (defined('JOURNAL_INSTALLED')) {
+                    global $registry;
+                    $is_ajax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+                    $is_get = !empty($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) === 'get';
+                    $ignored_routes = array(
+                        'journal2/assets/css',
+                        'journal2/assets/js',
+                        'feed/google_sitemap'
+                    );
+                    $request = $registry->get('request');
+                    $current_route = isset($request->get['route']) ? $request->get['route'] : null;
+                    $ignored_route = $current_route !== null && in_array($current_route, $ignored_routes);
+                    $journal2 = $registry->get('journal2');
+                    if (!$ignored_route && !$is_ajax && $is_get && !$journal2->settings->get('config_system_settings.developer_mode') && $journal2->settings->get('config_system_settings.minify_html')) {
+                        try {
+							$this->output = Minify_HTML::minify($this->output, array(
+                            'xhtml' => false,
+                            'jsMinifier' => 'j2_js_minify'
+                        ));
+						} catch (Exception $e) { }
+
+                        if (Journal2Cache::$page_cache_file) {
+                            file_put_contents(Journal2Cache::$page_cache_file, $this->output);
+                        }
+                    }
+                }
+            
 			$output = $this->level ? $this->compress($this->output, $this->level) : $this->output;
 			
 			if (!headers_sent()) {

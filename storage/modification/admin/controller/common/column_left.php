@@ -4,6 +4,22 @@ class ControllerCommonColumnLeft extends Controller {
 		if (isset($this->request->get['user_token']) && isset($this->session->data['user_token']) && ($this->request->get['user_token'] == $this->session->data['user_token'])) {
 			$this->load->language('common/column_left');
 
+                $this->load->model('setting/extension');
+                $extensions = $this->model_setting_extension->getInstalled('module');
+                if (in_array('journal2', $extensions) && $this->user->hasPermission('access', 'module/journal2')) {
+                    if (version_compare(VERSION, '2.2', '>=')) {
+                        $data['journal2'] = $this->url->link('module/journal2', version_compare(VERSION, '3', '>=') ? ('user_token=' . $this->session->data['user_token']) : ('token=' . $this->session->data['token']), true);
+                        $data['journal2_clear_cache'] = $this->url->link('module/journal2/clear_cache', version_compare(VERSION, '3', '>=') ? ('user_token=' . $this->session->data['user_token']) : ('token=' . $this->session->data['token']), true);
+                    } else {
+                        $data['journal2'] = $this->url->link('module/journal2', version_compare(VERSION, '3', '>=') ? ('user_token=' . $this->session->data['user_token']) : ('token=' . $this->session->data['token']), 'SSL');
+                        $data['journal2_clear_cache'] = $this->url->link('module/journal2/clear_cache', version_compare(VERSION, '3', '>=') ? ('user_token=' . $this->session->data['user_token']) : ('token=' . $this->session->data['token']), 'SSL');
+                    }
+                    $this->session->data['j2_redirect'] = isset($this->request->get['route']) ? $this->request->get['route'] : null;
+                } else {
+                    $data['journal2'] = '';
+                }
+            
+
 			// Create a 3 level menu array
 			// Level 2 can not have children
 			

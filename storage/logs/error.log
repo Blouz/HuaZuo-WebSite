@@ -7911,3 +7911,4 @@
 2018-03-05 10:04:58 - PHP Notice:  Undefined property: Anyport::$language in /home/wwwroot/www.myhuazuo.com/system/library/anyport.php on line 221
 2018-03-05 10:08:42 - PHP Notice:  Undefined index: AnyPort in /home/wwwroot/www.myhuazuo.com/admin/controller/extension/module/anyport.php on line 93
 2018-03-07 6:55:37 - PHP Warning:  unlink(/home/wwwroot/www.myhuazuo.com/storage/cache/cache.currency.1520404708): No such file or directory in /home/wwwroot/www.myhuazuo.com/system/library/cache/file.php on line 17
+2018-03-08 7:03:18 - PHP Warning:  unlink(/home/wwwroot/www.myhuazuo.com/storage/cache/cache.length_class.3.1520492512): No such file or directory in /home/wwwroot/www.myhuazuo.com/system/library/cache/file.php on line 17

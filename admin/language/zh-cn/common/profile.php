@@ -24,8 +24,8 @@ $_['column_action']         = '管理';
 $_['entry_username']        = '用户名';
 $_['entry_password']        = '密码';
 $_['entry_confirm']         = '确认密码';
-$_['entry_firstname']       = '名字';
-$_['entry_lastname']        = '姓氏';
+$_['entry_firstname']       = '姓氏';
+$_['entry_lastname']        = '名字';
 $_['entry_email']           = 'E-Mail';
 $_['entry_image']           = '头像';
 

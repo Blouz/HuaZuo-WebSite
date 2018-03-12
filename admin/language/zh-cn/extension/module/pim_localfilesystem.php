@@ -1,0 +1,19 @@
+<?php 
+$_['heading_title']                     = '图像管理器 :: 本地文件系统驱动器';
+$_['text_localfilesystem_description']  = '用来浏览本地文件的默认驱动器';
+$_['entry_localfilesystem_alias']       = '别称';
+$_['entry_localfilesystem_path']        = '根目录';
+$_['entry_localfilesystem_status']      = '启用';
+$_['entry_localfilesystem_URL']   = 'HTTP根目录URL';
+$_['help_localfilesystem_path']         = '这是图像管理器的开始文件夹';
+$_['help_localfilesystem_URL']    = '这是文件可访问的URL。如果没有HTTP根目录，你无法将图片正确的添加到产品中。';
+$_['text_yes']                          = '是';
+$_['text_no']                           = '否';
+$_['button_save']                       = '保存';
+$_['button_cancel']                     = '取消';
+$_['button_cancel']                     = '取消';
+$_['text_edit']                         = '添加/编辑FTP设置';
+$_['error_localfilesystem_alias']       = '需要别称！';
+$_['error_localfilesystem_path']        = '需要根目录文件夹';
+$_['error_alias_exist']                 = '该别称对应卷已存在.请选择另一个别称。';
+$_['error_warning']                     = '警告：请仔细检查错误！';

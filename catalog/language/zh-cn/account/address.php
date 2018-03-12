@@ -21,8 +21,8 @@ $_['text_delete']          = '您的地址已删除';
 $_['text_empty']           = '您还没有地址。';
 
 // Entry
-$_['entry_firstname']      = '名字';
-$_['entry_lastname']       = '姓氏';
+$_['entry_firstname']      = '姓氏';
+$_['entry_lastname']       = '名字';
 $_['entry_company']        = '公司名称';
 $_['entry_address_1']      = '地址行 1';
 $_['entry_address_2']      = '地址行 2';

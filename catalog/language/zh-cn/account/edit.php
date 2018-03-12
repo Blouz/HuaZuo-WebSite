@@ -17,8 +17,8 @@ $_['text_your_details']   = '我的详细信息';
 $_['text_success']        = '成功：您的账户已更新。';
 
 // Entry
-$_['entry_firstname']     = '名字';
-$_['entry_lastname']      = '姓氏';
+$_['entry_firstname']     = '姓氏';
+$_['entry_lastname']      = '名字';
 $_['entry_email']         = '电子邮箱';
 $_['entry_telephone']     = '联系电话';
 

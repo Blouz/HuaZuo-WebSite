@@ -14,7 +14,7 @@ class Braintree_TestResource
     }
 }
 
-class Braintree_ResourceCollectionTest extends PHPUnit_Framework_TestCase
+class Braintree_ResourceCollectionTest extends PHPUnit\Framework\TestCase
 {
     public static $values = array("a", "b", "c", "d", "e");
 

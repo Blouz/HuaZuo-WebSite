@@ -1,7 +1,7 @@
 <?php
 require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-class Braintree_SubscriptionSearchTest extends PHPUnit_Framework_TestCase
+class Braintree_SubscriptionSearchTest extends PHPUnit\Framework\TestCase
 {
     function testSearch_billingCyclesRemaining_isRangeNode()
     {

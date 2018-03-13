@@ -2,7 +2,7 @@
 
 require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-class Braintree_Xml_ParserTest extends PHPUnit_Framework_TestCase
+class Braintree_Xml_ParserTest extends PHPUnit\Framework\TestCase
 {
     function testTypeCastIntegers()
     {

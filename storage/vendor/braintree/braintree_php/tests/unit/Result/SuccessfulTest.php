@@ -1,7 +1,7 @@
 <?php
 require_once realpath(dirname(__FILE__)) . '/../../TestHelper.php';
 
-class Braintree_Result_SuccessfulTest extends PHPUnit_Framework_TestCase
+class Braintree_Result_SuccessfulTest extends PHPUnit\Framework\TestCase
 {
      /**
      * @expectedException        PHPUnit_Framework_Error_Notice

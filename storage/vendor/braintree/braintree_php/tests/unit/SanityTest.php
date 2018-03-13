@@ -1,7 +1,7 @@
 <?php
 require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-class Braintree_SanityTest extends PHPUnit_Framework_TestCase
+class Braintree_SanityTest extends PHPUnit\Framework\TestCase
 {
     function testCodeFiles_allOmitPHPCloseTag()
     {

@@ -1,7 +1,7 @@
 <?php
 require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-class Braintree_CreditCardTest extends PHPUnit_Framework_TestCase
+class Braintree_CreditCardTest extends PHPUnit\Framework\TestCase
 {
     function testGet_givesErrorIfInvalidProperty()
     {

@@ -1,7 +1,7 @@
 <?php
 require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-class Braintree_PayPalAccountTest extends PHPUnit_Framework_TestCase
+class Braintree_PayPalAccountTest extends PHPUnit\Framework\TestCase
 {
     function testGet_givesErrorIfInvalidProperty()
     {

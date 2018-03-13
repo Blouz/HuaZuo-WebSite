@@ -1,7 +1,7 @@
 <?php
 require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-class Braintree_WebhookNotificationTest extends PHPUnit_Framework_TestCase
+class Braintree_WebhookNotificationTest extends PHPUnit\Framework\TestCase
 {
     function setup()
     {

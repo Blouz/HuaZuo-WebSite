@@ -29,10 +29,7 @@
       {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
-      <h1 class="heading-title">{{ heading_title }}
-        {% if weight %}
-          &nbsp;({{ weight }})
-        {% endif %} </h1>
+      <h1 class="heading-title">购物车</h1>
       <form action="{{ action }}" method="post" enctype="multipart/form-data">
         <div class="table-responsive cart-info">
           <table class="table table-bordered">
@@ -96,13 +93,6 @@
         </div>
       </form>
       <div class="action-area">
-        {% if modules %}
-          <h2 class="secondary-title">{{ text_next }}</h2>
-          <p>{{ text_next_choice }}</p>
-          <div class="panel-group" id="accordion"> {% for module in modules %}
-              {{ module }}
-            {% endfor %} </div>
-        {% endif %}
         <div class="row">
           <div class="col-sm-4 col-sm-offset-8 cart-total">
             <table class="table table-bordered" id="total">

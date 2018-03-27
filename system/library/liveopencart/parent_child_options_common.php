@@ -73,6 +73,11 @@ class parent_child_options_common {
 		$language_id = (int)$this->config->get('config_language_id');
 		
 		// PCOP.product_option_id - product_option_id, PCOP.parent_option_id - option_id of parent
+		$query_pcop = $this->db->query("SELECT PCOP.pcop_id, PCOP.pcop_or, PCOP.product_id, PCOP.parent_product_option_id
+																		FROM  `".DB_PREFIX."pcop` PCOP
+																		WHERE PCOP.product_option_id = '" . (int)$product_option_id . "'
+																		");
+		/*
 		$query_pcop = $this->db->query("SELECT PCOP.pcop_id, PCOP.pcop_or, PO.product_id, POP.product_option_id parent_product_option_id
 																		FROM  `".DB_PREFIX."pcop` PCOP
 																				,	`".DB_PREFIX."product_option` PO
@@ -82,26 +87,16 @@ class parent_child_options_common {
 																			AND POP.product_id = PO.product_id
 																			AND POP.option_id = PCOP.parent_option_id
 																		");
-		/*
-		$query_pcop = $this->db->query("SELECT PCOP.pcop_id, PCOP.pcop_or, POP.product_option_id parent_option_id, OD.name
-																		FROM  `".DB_PREFIX."pcop` PCOP
-																				, `".DB_PREFIX."option` O
-																				, `".DB_PREFIX."option_description` OD
-																				, `".DB_PREFIX."product_option` PO
-																				, `".DB_PREFIX."product_option` POP
-																		WHERE PCOP.product_option_id = '" . (int)$product_option_id . "'
-																			AND O.option_id = PCOP.parent_option_id
-																			AND OD.option_id = PCOP.parent_option_id
-																			AND OD.language_id = ".$language_id."
-																			AND PO.product_option_id = PCOP.product_option_id
-																			AND POP.option_id = PCOP.parent_option_id
-																			AND POP.product_id = PO.product_id
-																		ORDER BY O.sort_order ASC, OD.name ASC, O.option_id ASC
-																		");
 		*/
+		
 		
 		foreach ($query_pcop->rows as $row_pcop) {
 			
+			$query_pcop_values = $this->db->query(" SELECT PCOPV.parent_product_option_value_id
+																							FROM  `".DB_PREFIX."pcop_value` PCOPV
+																							WHERE PCOPV.pcop_id = '" . (int)$row_pcop['pcop_id'] . "'
+																						");
+			/*
 			$query_pcop_values = $this->db->query(" SELECT POVP.product_option_value_id
 																							FROM  `".DB_PREFIX."pcop_value` PCOPV
 																									, `".DB_PREFIX."product_option_value` POVP
@@ -109,25 +104,12 @@ class parent_child_options_common {
 																								AND POVP.option_value_id = PCOPV.parent_option_value_id
 																								AND POVP.product_id = ".(int)$row_pcop['product_id']."
 																							");
-			/*
-			$query_pcop_values = $this->db->query(" SELECT POVP.product_option_value_id, OVD.name
-																							FROM  `".DB_PREFIX."pcop_value` PCOPV
-																									, `".DB_PREFIX."option_value` OV
-																									, `".DB_PREFIX."option_value_description` OVD
-																									, `".DB_PREFIX."product_option_value` POVP
-																							WHERE PCOPV.pcop_id = '" . (int)$row_pcop['pcop_id'] . "'
-																								AND OV.option_value_id = PCOPV.parent_option_value_id
-																								AND OVD.option_value_id = PCOPV.parent_option_value_id
-																								AND OVD.language_id = ".$language_id."
-																								AND POVP.product_option_id = ".(int)$row_pcop['parent_option_id']."
-																								AND POVP.option_value_id = PCOPV.parent_option_value_id
-																							ORDER BY OV.sort_order ASC, OVD.name ASC, OV.option_value_id ASC
-																							");
 			*/
 			
 			$row_pcop['values'] = array();
 			foreach ($query_pcop_values->rows as $row_pcop_value) {
-				$row_pcop['values'][] = $row_pcop_value['product_option_value_id'];
+				$row_pcop['values'][] = $row_pcop_value['parent_product_option_value_id'];
+				//$row_pcop['values'][] = $row_pcop_value['product_option_value_id'];
 			}
 		
 			$pcop[] = $row_pcop;

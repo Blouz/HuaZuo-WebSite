@@ -665,6 +665,13 @@
 
                               
                               </select>
+
+				{# // << Parent-child Options #}
+				{% if ( (pcop_installed ?? false) and (product_option_value.product_option_value_temp_id ?? false) ) %}
+					<input type="hidden" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][product_option_value_temp_id]" value="{{ product_option_value.product_option_value_temp_id }}" />
+				{% endif %}	
+				{# // >> Parent-child Options #}
+      
                               <input type="hidden" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][product_option_value_id]" value="{{ product_option_value.product_option_value_id }}" /></td>
                             <td class="text-right"><input type="text" name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][quantity]" value="{{ product_option_value.quantity }}" placeholder="{{ entry_quantity }}" class="form-control" /></td>
                             <td class="text-left"><select name="product_option[{{ option_row }}][product_option_value][{{ option_value_row }}][subtract]" class="form-control">
@@ -1537,18 +1544,18 @@ $('input[name=\'option\']').autocomplete({
 
 		$('#tab-option .tab-content').append(html);
 
-				// << Parent-child Options
-				{% if ( pcop_installed ?? 0 ) %}
-					pcop.showOptionSettings(option_row);
-				{% endif %}	
-				// >> Parent-child Options
-      
-
 				// << Product Option Image PRO module 
 				{% if poip_installed ?? false %}
 					poip.displayProductOptionSettings( option_row, item['type'] );
 				{% endif %}
 				// >> Product Option Image PRO module 
+      
+
+				// << Parent-child Options
+				{% if ( pcop_installed ?? 0 ) %}
+					pcop.showOptionSettings(option_row);
+				{% endif %}	
+				// >> Parent-child Options
       
 
 		$('#option > li:last-child').before('<li><a href="#tab-option' + option_row + '" data-toggle="tab"><i class="fa fa-minus-circle" onclick=" $(\'#option a:first\').tab(\'show\');$(\'a[href=\\\'#tab-option' + option_row + '\\\']\').parent().remove(); $(\'#tab-option' + option_row + '\').remove();"></i>' + item['label'] + '</li>');

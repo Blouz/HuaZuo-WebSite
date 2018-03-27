@@ -381,7 +381,7 @@ class Nitro_JSMin {
     protected function consumeMultipleLineComment()
     {
         $this->get();
-        $comment = '';
+        $comment = '';
         for(;;) {
             $get = $this->get();
             if ($get === '*') {

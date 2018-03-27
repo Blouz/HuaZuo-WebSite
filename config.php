@@ -1,15 +1,15 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://www.myhuazuo.com/');
+define('HTTP_SERVER', 'http://www.51huazuo.com/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://www.myhuazuo.com/');
+define('HTTPS_SERVER', 'http://www.51huazuo.com/');
 
 // DIR
-define('DIR_APPLICATION', '/home/wwwroot/www.myhuazuo.com/catalog/');
-define('DIR_SYSTEM', '/home/wwwroot/www.myhuazuo.com/system/');
-define('DIR_IMAGE', '/home/wwwroot/www.myhuazuo.com/image/');
-define('DIR_STORAGE', '/home/wwwroot/www.myhuazuo.com/storage/');
+define('DIR_APPLICATION', '/home/wwwroot/www.51huazuo.com/catalog/');
+define('DIR_SYSTEM', '/home/wwwroot/www.51huazuo.com/system/');
+define('DIR_IMAGE', '/home/wwwroot/www.51huazuo.com/image/');
+define('DIR_STORAGE', '/home/wwwroot/www.51huazuo.com/storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');

@@ -325,6 +325,7 @@ class ControllerProductProduct extends Controller {
 
 				liveopencart\poip::initLibrary($this->registry);
 				$this->liveopencart_poip->getModel()->addProductPageResources();
+				
 				$poip_data = $this->liveopencart_poip->getModel()->getDataForProductPage($this->request->get['product_id'], $results);
 				if ( $poip_data ) {
 					$data = array_merge($data, $poip_data['data']);

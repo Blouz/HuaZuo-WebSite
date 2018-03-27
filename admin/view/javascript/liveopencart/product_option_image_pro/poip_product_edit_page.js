@@ -176,6 +176,8 @@ var poip = {
 				for ( var setting_value in setting_details.values ) {
 					if ( !setting_details.values.hasOwnProperty(setting_value) ) continue;
 					
+					setting_value = parseInt(setting_value);
+					
 					var setting_title = setting_details.values[setting_value];
 					html+= '<option value="'+(setting_value+1)+'"';
 					if ( product_option_settings && typeof(product_option_settings[setting_details.name] != 'undefined') && product_option_settings[setting_details.name] == (setting_value+1) ) {

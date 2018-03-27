@@ -8,6 +8,7 @@ var pcop = {
 	texts : {},
 	all_product_options : {},		// created by specific function of PCOP
 	basic_product_options : {}, // created by standard product controller
+	temp_id_cnt : 0,
 
 	init : function( product_option_cnt ) {
 		
@@ -17,64 +18,150 @@ var pcop = {
 			}
 		}
 		
+		var option_tab_href_prefix = '#tab-option';
+		$('#option').on('click', 'a[href^="'+option_tab_href_prefix+'"]', function(){
+			var tab_num = $(this).attr('href').substr( option_tab_href_prefix.length );
+			
+			pcop.updateParentSettingsForOption(tab_num);
+		});
+		
 	},
 	
-	// refresh list of values for parent option
-	// pcop_parent_option_cnt - number of parent option block
-	// settings - values that should be selected
-	// set_parent_option_id - set parent option id to this value
-	showParentOptionValues : function(parent_option_num, settings, set_parent_option_id) {
+	getNewTempId : function() {
+		pcop.temp_id_cnt++;
+		return pcop.temp_id_cnt;
+	},
+	getMaxExistingTempId : function(){
+		var max_temp_id = 0;
+		$('#tab-option input[type="hidden"][name^="product_option["][name$="[product_option_value_temp_id]"]').each(function(){
+			max_temp_id = Math.max(max_temp_id, (parseInt($(this).val()) || 0) );
+		});
+		return max_temp_id;
+	},
 	
-		var parent_option_select = $('#parent_option_'+parent_option_num);
-		if (set_parent_option_id) {
-			parent_option_select.val(set_parent_option_id);
-		}
+	getAllOptions : function() {
 		
-		var parent_option_id = parent_option_select.val();
-		var block_number = pcop.getProductOptionBlockNumberFromName( $('#parent_option_'+parent_option_num).attr('name') );
-		//var block_number = pcop.getProductOptionBlockNumberByProductOptionId($('#parent_option_'+parent_option_num).attr('name'));
-		if ( block_number === false ) {
-			return;
-		}
-		var html = '';
-		
-		var current_values = [];
-		if (settings) {
-			current_values = settings;
-		} else {
-			$('#parent_option_values_'+parent_option_num).find('input[type=checkbox]:checked').each(function(){
-				current_values.push($(this).val());
-			});
-		}
-		
-		if (parent_option_id) {
-			for (var i in pcop.all_product_options) {
-				if ( !pcop.all_product_options.hasOwnProperty(i) ) continue;
+		var product_options = [];
+		var pcop_temp_id_cnt = pcop.getMaxExistingTempId()+1;
+		var option_tab_id_beginning = 'tab-option';
+		$('#tab-option [id^="'+option_tab_id_beginning+'"]').each(function(){
+			var $option_container = $(this);
+			var tab_num = parseInt( $option_container.attr('id').substr( option_tab_id_beginning.length ) );
+			if ( !isNaN(tab_num) ) {
 				
-				if (pcop.all_product_options[i]['option_id'] == parent_option_id && pcop.all_product_options[i]['product_option_value']) {
-					for (var j in pcop.all_product_options[i]['product_option_value']) {
-						if ( !pcop.all_product_options[i]['product_option_value'].hasOwnProperty(j) ) continue;
-					
-						var pcop_pov = pcop.all_product_options[i]['product_option_value'][j];
-						html += '<div class="checkbox"><label>';
-						html += '<input type="checkbox" name="product_option['+block_number+'][pcop]['+parent_option_num+'][values][]" ';
-						if ( $.inArray(pcop_pov['option_value_id'], current_values) != -1 ) {
-							html += ' checked ';
-						}
-						html += ' value="'+pcop_pov['option_value_id']+'">';
-						html += pcop_pov['name'];
-						html += '</label></div>';
-					}
+				var product_option = {};
+				
+				var $po_id_input = $option_container.find('input[name="product_option['+tab_num+'][product_option_id]"]');
+				
+				product_option['product_option_id'] 			= $po_id_input.val();
+				product_option['product_option_temp_id'] 	= $option_container.find('input[name="product_option['+tab_num+'][product_option_temp_id]"]').val();
+				product_option['name'] 										= $option_container.find('input[name="product_option['+tab_num+'][name]"]').val();
+				product_option['option_id'] 							= $option_container.find('input[name="product_option['+tab_num+'][option_id]"]').val();
+				product_option['type'] 										= $option_container.find('input[name="product_option['+tab_num+'][type]"]').val();
+				
+				// the module uses temp ids, add them id needed
+				if ( !product_option['product_option_temp_id'] ) {
+					product_option['product_option_temp_id'] = pcop.getNewTempId();
+					var html_temp_id = '<input type="hidden" name="product_option['+tab_num+'][product_option_temp_id]" value="'+product_option['product_option_temp_id']+'">';
+					$po_id_input.before(html_temp_id);
 				}
+				
+				
+				product_option['values'] = pcop.getAllOptionValuesFromContainer($option_container, tab_num);
+				
+				
+				product_options.push(product_option);
 			}
+			
+		});
+		
+		return product_options;
+	},
+	
+	getAllOptionValuesFromContainer : function($option_container, tab_num) {
+		
+		var option_value_row_id_beginning = 'option-value-row';
+		var $option_value_container = $option_container.find('#option-value'+tab_num);
+		
+		if ( $option_value_container.length ) {
+			var values = [];
+			$option_value_container.find('[id^="'+option_value_row_id_beginning+'"]').each(function(){
+				
+				var $option_value_row = $(this);
+				var row_num = parseInt( $option_value_row.attr('id').substr( option_value_row_id_beginning.length ) );
+				if ( !isNaN(row_num) ) {
+					var value = {};
+					
+					var $pov_id_input = $option_value_row.find('input[name="product_option['+tab_num+'][product_option_value]['+row_num+'][product_option_value_id]"]');
+					var $pov_select = $option_value_row.find('select[name="product_option['+tab_num+'][product_option_value]['+row_num+'][option_value_id]"]');
+					
+					value['product_option_value_id'] = $option_value_row.find('input[name="product_option['+tab_num+'][product_option_value]['+row_num+'][product_option_value_temp_id]"]').val();
+					value['product_option_value_temp_id'] = $option_value_row.find('input[name="product_option['+tab_num+'][product_option_value]['+row_num+'][product_option_value_temp_id]"]').val();
+					value['product_option_value_id'] = $pov_id_input.val();
+					value['option_value_id'] = $pov_select.val();
+					value['name'] = $pov_select.find('option[value="'+value['option_value_id']+'"]').html();
+					
+					// the module uses temp ids, add them id needed
+					if ( !value['product_option_value_temp_id'] ) {
+						value['product_option_value_temp_id'] = pcop.getNewTempId();
+						var html_temp_id = '<input type="hidden" name="product_option['+tab_num+'][product_option_value]['+row_num+'][product_option_value_temp_id]" value="'+value['product_option_value_temp_id']+'">';
+						$pov_id_input.before(html_temp_id);
+					}
+					
+					values.push(value);
+				}
+				
+			});
+			
+			return values;
 		}
+	},
+	
+	getParentSettingsForOption(product_option_block_num) {
+		var parents_settings = [];
 		
-		$('#parent_option_values_'+parent_option_num).html(html);
+		var $parents_container = $('#pcop_parent_options_'+product_option_block_num);
+		$parents_container.find('input[data-pcop-num]').each(function(){
+			var pcop_num = $(this).attr('data-pcop-num');
+			var pcop_name_prefix = 'product_option['+product_option_block_num+'][pcop]['+pcop_num+']';
+			var parent_settings = {};
+			
+			parent_settings['pcop_id'] = $parents_container.find('input[name="'+pcop_name_prefix+'[pcop_id]"]').val();
+			parent_settings['pcop_or'] = $parents_container.find(':checkbox[name="'+pcop_name_prefix+'[pcop_or]"]:checked').val();
+			parent_settings['parent_product_option_temp_id'] = $parents_container.find('select[name="'+pcop_name_prefix+'[parent_product_option_temp_id]"]').val();
+			
+			var current_values = [];
+			
+			$parents_container.find(':checkbox[name^="'+pcop_name_prefix+'"][name$="[values][]"]:checked').each(function(){
+				current_values.push( $(this).val() );
+			});
+			
+			parent_settings['current_values'] = current_values;
+			
+			parents_settings.push(parent_settings);
+		});
 		
+		return parents_settings;
+	},
+	
+	updateParentSettingsForOption : function(product_option_block_num) {
+		var parents_settings = pcop.getParentSettingsForOption(product_option_block_num);
+		$('#pcop_parent_options_'+product_option_block_num).find('tbody').html('');
+		for ( var i_parents_settings in parents_settings ) {
+			if ( !parents_settings.hasOwnProperty(i_parents_settings) ) continue;
+			var parent_settings = parents_settings[i_parents_settings];
+			pcop.addParentOption(product_option_block_num, parent_settings);
+		}
 	},
 	
 	// add one more parent option rule
-	addParentOption : function(product_option_block_num, settings) {
+	addParentOption : function(product_option_block_num, settings, p_product_options) {
+		
+		if ( p_product_options ) {
+			var product_options = p_product_options;
+		} else {
+			var product_options = pcop.getAllOptions();
+		}
 	
 		var pcop_table = $('#pcop_parent_options_'+product_option_block_num);
 		//var block_number = pcop_get_product_option_block_number_by_product_option_id(product_option_id);
@@ -83,18 +170,25 @@ var pcop = {
 		html += '<tr>';
 		html += '<td>';
 		html += '<div class="col-sm-4">';
+		html += '<input type="hidden" data-pcop-num="'+pcop.parent_option_cnt+'">';
 		html += '<input type="hidden" name="product_option['+product_option_block_num+'][pcop]['+pcop.parent_option_cnt+'][pcop_id]" value="'+(settings ? settings['pcop_id'] : '')+'">';
-		html += '<select name="product_option['+product_option_block_num+'][pcop]['+pcop.parent_option_cnt+'][parent_option_id]" id="parent_option_'+pcop.parent_option_cnt+'" class="form-control" onchange="pcop.showParentOptionValues('+pcop.parent_option_cnt+')">';
+		html += '<select name="product_option['+product_option_block_num+'][pcop]['+pcop.parent_option_cnt+'][parent_product_option_temp_id]" id="parent_option_'+pcop.parent_option_cnt+'" class="form-control" onchange="pcop.showParentOptionValues('+pcop.parent_option_cnt+')">';
 		html += '<option value="">-</option>';
 		
-		if (pcop.all_product_options) {
-			for (var i in pcop.all_product_options) {
-				if ( !pcop.all_product_options.hasOwnProperty(i) ) continue;
+		if (product_options) {
+			for (var i_product_options in product_options) {
+				if ( !product_options.hasOwnProperty(i_product_options) ) continue;
+				var product_option = product_options[i_product_options];
 				
-				if ( $.inArray(pcop.all_product_options[i]['type'], ['select','radio','image','checkbox','block','color']) != -1 ) {
-					html += '<option value="'+pcop.all_product_options[i]['option_id']+'"';
-					html += ' '+( (settings && pcop.all_product_options[i]['option_id']==settings['parent_option_id']) ? 'selected' : '' )+' ';
-					html += '>'+pcop.all_product_options[i]['name']+'</option>';
+				if ( $.inArray(product_option['type'], ['select','radio','image','checkbox','block','color']) != -1 ) {
+					html += '<option value="'+product_option['product_option_temp_id']+'"';
+					if ( settings && typeof(settings['parent_product_option_id']) != 'undefined' && product_option['product_option_id']==settings['parent_product_option_id']) {
+						html += 'selected'; // for init load
+					}
+					if ( settings && typeof(settings['parent_product_option_temp_id']) != 'undefined' && product_option['product_option_temp_id']==settings['parent_product_option_temp_id']) {
+						html += 'selected'; // for update
+					}
+					html += '>'+product_option['name']+'</option>';
 				}
 			}
 		}
@@ -123,10 +217,74 @@ var pcop = {
 		
 		pcop_table.find('tbody').append(html);
 		
-		pcop.showParentOptionValues(pcop.parent_option_cnt, (settings ? settings['values'] : false), (settings ? settings['parent_option_id'] : false) );
+		pcop.showParentOptionValues(pcop.parent_option_cnt, settings, product_options );
 		
 		pcop.parent_option_cnt++;
 		pcop.checkTextNoParentOptions(product_option_block_num);
+		
+	},
+	
+	// refresh list of values for parent option
+	// pcop_parent_option_cnt - number of parent option block
+	// settings - values that should be selected
+	// set_parent_option_id - set parent option id to this value
+	showParentOptionValues : function(parent_option_num, settings, p_product_options) {
+	
+		if ( p_product_options ) {
+			var product_options = p_product_options;
+		} else {
+			var product_options = pcop.getAllOptions();
+		}
+	
+		var parent_option_select = $('#parent_option_'+parent_option_num);
+		var parent_product_option_temp_id = parent_option_select.val();
+		
+		var block_number = pcop.getProductOptionBlockNumberFromName( $('#parent_option_'+parent_option_num).attr('name') );
+		//var block_number = pcop.getProductOptionBlockNumberByProductOptionId($('#parent_option_'+parent_option_num).attr('name'));
+		if ( block_number === false ) {
+			return;
+		}
+		var html = '';
+
+		if (parent_product_option_temp_id) {
+			for (var i_product_options in product_options) {
+				if ( !product_options.hasOwnProperty(i_product_options) ) continue;
+				
+				var product_option = product_options[i_product_options];
+				
+				if (product_option['product_option_temp_id'] == parent_product_option_temp_id && product_option['values']) {
+					for (var i_values in product_option['values']) {
+						if ( !product_option['values'].hasOwnProperty(i_values) ) continue;
+					
+						var pcop_pov = product_option['values'][i_values];
+					
+						html += '<div class="checkbox"><label>';
+						html += '<input type="checkbox" name="product_option['+block_number+'][pcop]['+parent_option_num+'][values][]" ';
+						
+						if ( settings && typeof(settings['values']) != 'undefined' ) { // pcop settings are set
+							if ( settings.parent_product_option_temp_id && pcop_pov.product_option_value_temp_id ) { // return from unsuccessful attempt to save
+								if ( $.inArray(pcop_pov.product_option_value_temp_id, settings['values']) != -1 || $.inArray(pcop_pov.product_option_value_temp_id.toString(), settings['values']) != -1 ) {
+									html += ' checked ';
+								}
+							} else { // from saved data
+								if ( $.inArray(pcop_pov['product_option_value_id'], settings['values']) != -1 ) {
+									html += ' checked ';
+								}
+							}
+						} else if ( settings && typeof(settings['current_values']) != 'undefined' ) { // from replaced content (for update)
+							if ( $.inArray(pcop_pov.product_option_value_temp_id, settings['current_values']) != -1 ) {
+								html += ' checked ';
+							}
+						}
+						html += ' value="'+pcop_pov['product_option_value_temp_id']+'">';
+						html += pcop_pov['name'];
+						html += '</label></div>';
+					}
+				}
+			}
+		}
+		
+		$('#parent_option_values_'+parent_option_num).html(html);
 		
 	},
 	
@@ -152,9 +310,10 @@ var pcop = {
 		$('#tab-option'+product_option_block_num+' div.form-group:first').after(html);
 		
 		if (pcop_data) {
+			var product_options = pcop.getAllOptions();
 			for (var i in pcop_data) {
 				if ( !pcop_data.hasOwnProperty(i) ) continue;
-				pcop.addParentOption(product_option_block_num, pcop_data[i]);
+				pcop.addParentOption(product_option_block_num, pcop_data[i], product_options);
 			}
 		}
 	

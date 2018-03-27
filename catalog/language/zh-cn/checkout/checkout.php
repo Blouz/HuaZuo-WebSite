@@ -5,6 +5,7 @@
  * @author           opencart.cn <support@opencart.cn>
  * @created          2016-10-23 11:22:04
  * @modified         2016-12-09 17:16:03
+ * catalog/language/zh-cn/checkout/checkout.php
  */
 
 // Heading
@@ -66,7 +67,7 @@ $_['entry_telephone']                = '电话';
 $_['entry_address']                  = '选择地址';
 $_['entry_company']                  = '公司名称';
 $_['entry_customer_group']           = '客户组';
-$_['entry_address_1']                = '地址行 1';
+$_['entry_address_1']                = '地址';
 $_['entry_address_2']                = '地址行 2';
 $_['entry_postcode']                 = '邮政编码';
 $_['entry_city']                     = '城市';

@@ -126,7 +126,7 @@ class ControllerExtensionModuleProductOptionImagePro extends Controller {
 	
 	public function import() {
 		
-		$this->load->model('module/product_option_image_pro');
+		//$this->load->model('module/product_option_image_pro');
 		
 		$json = array();
 		
@@ -218,7 +218,7 @@ class ControllerExtensionModuleProductOptionImagePro extends Controller {
 			ini_set('display_errors', 1);
 			error_reporting(E_ERROR|E_PARSE);	
 			
-			$this->load->model('module/product_option_image_pro');
+			//$this->load->model('module/product_option_image_pro');
 			$data = $this->liveopencart_poip->getModel()->getAllImages();
 			
 			require_once $this->PHPExcelPath();

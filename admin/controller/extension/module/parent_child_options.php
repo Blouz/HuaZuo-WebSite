@@ -281,7 +281,7 @@ class ControllerExtensionModuleParentChildOptions extends Controller {
 			}
 			
 		} else {
-			$json['error'] = "file not uploaded";
+			$json['error'] = "file is not uploaded";
 		}
 		
 		$this->response->setOutput(json_encode($json));

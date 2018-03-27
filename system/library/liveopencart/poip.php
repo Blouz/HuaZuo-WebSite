@@ -9,7 +9,7 @@ class poip {
 	
 	private static $extension_library_id = 'liveopencart_poip';
 	private $extension_code 	= 'poip3';
-	private $extension_version 	= '3.0.0';
+	private $extension_version 	= '3.0.2';
 	private $extension_installed = null;
 	private $extension_model;
 	private $extension_language;

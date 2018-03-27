@@ -57,7 +57,10 @@ $_['entry_m_version']                 = 'Parent-child Options, version';
 
 $_['text_update_alert']               = '(a new version is available)';
 
-$_['text_extension_page']             = '<a href="https://www.opencart.com/index.php?route=extension/extension/info&extension_id=23337" target="_blank" title="Parent-child Options on opencart.com">Parent-child Options on opencart.com</a>';
+$_['text_extension_page']             = '
+<a href="https://isenselabs.com/products/view/parent-child-options-enhanced-opencart-product-options?pa=41075&#10;" target="_blank" title="Parent-child Options on isenselabs.com">Parent-child Options on isenselabs.com</a>
+| <a href="https://www.opencart.com/index.php?route=marketplace/extension/info&amp;extension_id=31568" target="_blank" title="Parent-child Options on opencart.com">Parent-child Options on opencart.com</a>
+';
 
 $_['entry_about']               			= 'About';
 $_['module_description']    					= '

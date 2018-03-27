@@ -34,11 +34,6 @@ class ControllerCatalogProduct extends Controller {
         
 
 	public function index() {
-
-        // << Parent-child Options
-				$this->load->language('extension/module/parent_child_options');
-        // >> Parent-child Options
-      
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -49,11 +44,6 @@ class ControllerCatalogProduct extends Controller {
 	}
 
 	public function add() {
-
-        // << Parent-child Options
-				$this->load->language('extension/module/parent_child_options');
-        // >> Parent-child Options
-      
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -106,11 +96,6 @@ class ControllerCatalogProduct extends Controller {
 	}
 
 	public function edit() {
-
-        // << Parent-child Options
-				$this->load->language('extension/module/parent_child_options');
-        // >> Parent-child Options
-      
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -163,11 +148,6 @@ class ControllerCatalogProduct extends Controller {
 	}
 
 	public function delete() {
-
-        // << Parent-child Options
-				$this->load->language('extension/module/parent_child_options');
-        // >> Parent-child Options
-      
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -222,11 +202,6 @@ class ControllerCatalogProduct extends Controller {
 	}
 
 	public function copy() {
-
-        // << Parent-child Options
-				$this->load->language('extension/module/parent_child_options');
-        // >> Parent-child Options
-      
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -552,33 +527,6 @@ class ControllerCatalogProduct extends Controller {
           $data['pim_status'] = $this->config->get('pim_status');
         
 
-        // << Parent-child Options
-        
-				$this->load->model('extension/module/parent_child_options');
-				if ( $this->model_extension_module_parent_child_options->installed() ) {
-				
-					$this->document->addScript($this->model_extension_module_parent_child_options->getProductEditPageScriptPath());
-				
-					// Create a new language container 
-					$pcop_language = new Language($this->config->get('config_language'));
-					$pcop_language->load('extension/module/parent_child_options');
-				
-					$data['pcop_installed']										= true;
-					$data['pcop_entry_settings']              = $pcop_language->get('pcop_entry_settings');
-					$data['pcop_entry_no_parent_options']     = $pcop_language->get('pcop_entry_no_parent_options');
-					$data['pcop_entry_add_parent_option']     = $pcop_language->get('pcop_entry_add_parent_option');
-					$data['pcop_entry_or']                    = $pcop_language->get('pcop_entry_or');
-					$data['pcop_entry_remove_parent_option']  = $pcop_language->get('pcop_entry_remove_parent_option');
-					$data['pcop_texts']  											= $pcop_language->all();
-					
-					
-					if (isset($this->request->get['product_id'])) {
-						$data['pcop_all_product_options'] = $this->model_extension_module_parent_child_options->getAllProductOptionsByProductId($this->request->get['product_id']);
-					}
-        }
-        // >> Parent-child Options
-      
-
 				// Product Option Image PRO module <<
 				liveopencart\poip::initLibrary($this->registry);
 				
@@ -593,6 +541,19 @@ class ControllerCatalogProduct extends Controller {
 				$this->liveopencart_poip->getModel()->addProductPageResources();
 				
 				// >> Product Option Image PRO module
+      
+
+        // << Parent-child Options
+        
+				$this->load->model('extension/module/parent_child_options');
+				if ( $this->model_extension_module_parent_child_options->installed() ) {
+				
+					$this->document->addScript($this->model_extension_module_parent_child_options->getProductEditPageScriptPath());
+					
+					$data = array_merge( !empty($data) ? $data : array(), $this->model_extension_module_parent_child_options->getProductPageData() );
+				
+        }
+        // >> Parent-child Options
       
 		$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 

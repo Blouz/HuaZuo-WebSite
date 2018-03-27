@@ -19,7 +19,7 @@ var poip_common = {
 				console.debug('POIP: jQuery($) is not found');
 			}
 			setTimeout(function(){
-				poip_common.initObject(obj_to_init, params, debug, call_cnt);
+				poip_common.initObject(obj_to_init, params, debug, call_cnt+1);
 			}, 100);
 			return;
 		}
@@ -48,27 +48,44 @@ var poip_common = {
 		return obj_to_proxy;
 	},
 	
+	debugInfo : function(data, debug) {
+		if ( debug ) {
+			console.debug(data);
+		}
+	},
+	
 	proxyObjectMethod : function(obj_to_proxy, _method_name, _method, debug) {
 		
 		obj_to_proxy[_method_name] = function(){
 			
-			if ( typeof(obj_to_proxy[_method_name + poip_common.events_suffixes.before]) == 'function' ) {
-				obj_to_proxy[_method_name + poip_common.events_suffixes.before].apply(this, arguments);
+			poip_common.debugInfo('call proxied method: '+_method_name, debug);
+			poip_common.debugInfo(arguments, debug);
+			
+			if ( typeof(obj_to_proxy.custom_methods[_method_name + poip_common.events_suffixes.before]) == 'function' ) {
+				
+				poip_common.debugInfo('call '+poip_common.events_suffixes.before, debug);
+				
+				obj_to_proxy.custom_methods[_method_name + poip_common.events_suffixes.before].apply(this, arguments);
 			}
 			
-			if ( typeof(obj_to_proxy[_method_name + poip_common.events_suffixes.instead]) == 'function' ) {
-				return obj_to_proxy[_method_name + poip_common.events_suffixes.instead].apply(this, arguments);
+			if ( typeof(obj_to_proxy.custom_methods[_method_name + poip_common.events_suffixes.instead]) == 'function' ) {
+				
+				poip_common.debugInfo('call '+poip_common.events_suffixes.instead, debug);
+				
+				return obj_to_proxy.custom_methods[_method_name + poip_common.events_suffixes.instead].apply(this, arguments);
 			}
 			
-			if ( debug ) {
-				console.debug(_method_name);
-				console.debug(arguments);
-			}
+			
+			
+			poip_common.debugInfo('call original', debug);
 			
 			var result = _method.apply(this, arguments);
 			
-			if ( typeof(obj_to_proxy[_method_name + poip_common.events_suffixes.after]) == 'function' ) {
-				obj_to_proxy[_method_name + poip_common.events_suffixes.after].apply(this, arguments);
+			if ( typeof(obj_to_proxy.custom_methods[_method_name + poip_common.events_suffixes.after]) == 'function' ) {
+				
+				poip_common.debugInfo('call '+poip_common.events_suffixes.after, debug);
+				
+				obj_to_proxy.custom_methods[_method_name + poip_common.events_suffixes.after].apply(this, arguments);
 			}
 			
 			return result;
@@ -116,7 +133,7 @@ var poip_common = {
 	},
 	
 	getOuterHTML : function($elem) {
-		str = $('<div>').append($elem.clone()).html();
+		var str = $('<div>').append($elem.clone()).html();
 		return str;
 	},
 	

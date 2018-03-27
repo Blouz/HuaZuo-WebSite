@@ -42,16 +42,33 @@ class ModelCatalogProduct extends Model {
 
 		if (isset($data['product_option'])) {
 			foreach ($data['product_option'] as $product_option) {
+
+        // << Parent-child Options
+				
+				if (__FUNCTION__ == 'addProduct' || __FUNCTION__ == 'editProduct') {
+					if ( !empty($product_option['product_option_id']) ) {
+						$pcop_product_option_id = $product_option['product_option_id'];
+						if ( isset($product_option['product_option_temp_id']) ) {
+							$pcop_temp_ids['po'][$product_option['product_option_temp_id']] = $pcop_product_option_id;
+						}
+					}
+				}
+        
+        // >> Parent-child Options
+      
 				if ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') {
 					if (isset($product_option['product_option_value'])) {
 						$this->db->query("INSERT INTO " . DB_PREFIX . "product_option SET product_id = '" . (int)$product_id . "', option_id = '" . (int)$product_option['option_id'] . "', required = '" . (int)$product_option['required'] . "'");
 
         // << Parent-child Options
         
-        if ( isset($product_option) && $product_option ) {
+        if ( !empty($product_option) ) {
           $pcop_product_option_id = $this->db->getLastId();
-          $this->pcop_setParents($pcop_product_option_id, $product_option);
-          $this->pcop_reinsertProductOption($pcop_product_option_id);
+					if ( isset($product_option['product_option_temp_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_temp_id']] = $pcop_product_option_id;
+					} elseif ( isset($product_option['product_option_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_id']] = $pcop_product_option_id;
+					}
         } 
         
         // >> Parent-child Options
@@ -81,6 +98,20 @@ class ModelCatalogProduct extends Model {
 				
 				// >> Product Option Image PRO module
       
+
+        // << Parent-child Options
+        
+        if ( !empty($product_option_value) ) {
+          $pcop_product_option_value_id = $this->db->getLastId();
+					if ( isset($product_option_value['product_option_value_temp_id']) ) {
+						$pcop_temp_ids['pov'][$product_option_value['product_option_value_temp_id']] = $pcop_product_option_value_id;
+					} elseif ( isset($product_option_value['product_option_value_id']) ) {
+						$pcop_temp_ids['pov'][$product_option_value['product_option_value_id']] = $pcop_product_option_value_id;
+					}
+        } 
+        
+        // >> Parent-child Options
+      
 						}
 					}
 				} else {
@@ -88,10 +119,13 @@ class ModelCatalogProduct extends Model {
 
         // << Parent-child Options
         
-        if ( isset($product_option) && $product_option ) {
+        if ( !empty($product_option) ) {
           $pcop_product_option_id = $this->db->getLastId();
-          $this->pcop_setParents($pcop_product_option_id, $product_option);
-          $this->pcop_reinsertProductOption($pcop_product_option_id);
+					if ( isset($product_option['product_option_temp_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_temp_id']] = $pcop_product_option_id;
+					} elseif ( isset($product_option['product_option_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_id']] = $pcop_product_option_id;
+					}
         } 
         
         // >> Parent-child Options
@@ -195,6 +229,19 @@ class ModelCatalogProduct extends Model {
 		}
 
 
+
+        // << Parent-child Options
+        
+        if ( (__FUNCTION__ == 'addProduct' || __FUNCTION__ == 'editProduct') && isset($data['product_option']) ) {
+					$this->load->model('extension/module/parent_child_options');					
+					$this->model_extension_module_parent_child_options->setProductOptionsParents($product_id, $data['product_option'], $pcop_temp_ids);
+				} elseif ( __FUNCTION__ == 'deleteProduct' ) {
+					$this->load->model('extension/module/parent_child_options');					
+					$this->model_extension_module_parent_child_options->removeProductPCOP($product_id);
+				}
+        
+        // >> Parent-child Options
+      
 		$this->cache->delete('product');
 
 		return $product_id;
@@ -254,16 +301,33 @@ class ModelCatalogProduct extends Model {
 
 		if (isset($data['product_option'])) {
 			foreach ($data['product_option'] as $product_option) {
+
+        // << Parent-child Options
+				
+				if (__FUNCTION__ == 'addProduct' || __FUNCTION__ == 'editProduct') {
+					if ( !empty($product_option['product_option_id']) ) {
+						$pcop_product_option_id = $product_option['product_option_id'];
+						if ( isset($product_option['product_option_temp_id']) ) {
+							$pcop_temp_ids['po'][$product_option['product_option_temp_id']] = $pcop_product_option_id;
+						}
+					}
+				}
+        
+        // >> Parent-child Options
+      
 				if ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') {
 					if (isset($product_option['product_option_value'])) {
 						$this->db->query("INSERT INTO " . DB_PREFIX . "product_option SET product_option_id = '" . (int)$product_option['product_option_id'] . "', product_id = '" . (int)$product_id . "', option_id = '" . (int)$product_option['option_id'] . "', required = '" . (int)$product_option['required'] . "'");
 
         // << Parent-child Options
         
-        if ( isset($product_option) && $product_option ) {
+        if ( !empty($product_option) ) {
           $pcop_product_option_id = $this->db->getLastId();
-          $this->pcop_setParents($pcop_product_option_id, $product_option);
-          $this->pcop_reinsertProductOption($pcop_product_option_id);
+					if ( isset($product_option['product_option_temp_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_temp_id']] = $pcop_product_option_id;
+					} elseif ( isset($product_option['product_option_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_id']] = $pcop_product_option_id;
+					}
         } 
         
         // >> Parent-child Options
@@ -293,6 +357,20 @@ class ModelCatalogProduct extends Model {
 				
 				// >> Product Option Image PRO module
       
+
+        // << Parent-child Options
+        
+        if ( !empty($product_option_value) ) {
+          $pcop_product_option_value_id = $this->db->getLastId();
+					if ( isset($product_option_value['product_option_value_temp_id']) ) {
+						$pcop_temp_ids['pov'][$product_option_value['product_option_value_temp_id']] = $pcop_product_option_value_id;
+					} elseif ( isset($product_option_value['product_option_value_id']) ) {
+						$pcop_temp_ids['pov'][$product_option_value['product_option_value_id']] = $pcop_product_option_value_id;
+					}
+        } 
+        
+        // >> Parent-child Options
+      
 						}
 					}
 				} else {
@@ -300,10 +378,13 @@ class ModelCatalogProduct extends Model {
 
         // << Parent-child Options
         
-        if ( isset($product_option) && $product_option ) {
+        if ( !empty($product_option) ) {
           $pcop_product_option_id = $this->db->getLastId();
-          $this->pcop_setParents($pcop_product_option_id, $product_option);
-          $this->pcop_reinsertProductOption($pcop_product_option_id);
+					if ( isset($product_option['product_option_temp_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_temp_id']] = $pcop_product_option_id;
+					} elseif ( isset($product_option['product_option_id']) ) {
+						$pcop_temp_ids['po'][$product_option['product_option_id']] = $pcop_product_option_id;
+					}
         } 
         
         // >> Parent-child Options
@@ -429,6 +510,19 @@ class ModelCatalogProduct extends Model {
 			}
 		}
 
+
+        // << Parent-child Options
+        
+        if ( (__FUNCTION__ == 'addProduct' || __FUNCTION__ == 'editProduct') && isset($data['product_option']) ) {
+					$this->load->model('extension/module/parent_child_options');					
+					$this->model_extension_module_parent_child_options->setProductOptionsParents($product_id, $data['product_option'], $pcop_temp_ids);
+				} elseif ( __FUNCTION__ == 'deleteProduct' ) {
+					$this->load->model('extension/module/parent_child_options');					
+					$this->model_extension_module_parent_child_options->removeProductPCOP($product_id);
+				}
+        
+        // >> Parent-child Options
+      
 		$this->cache->delete('product');
 	}
 
@@ -492,6 +586,19 @@ class ModelCatalogProduct extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "seo_url WHERE query = 'product_id=" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "coupon_product WHERE product_id = '" . (int)$product_id . "'");
 
+
+        // << Parent-child Options
+        
+        if ( (__FUNCTION__ == 'addProduct' || __FUNCTION__ == 'editProduct') && isset($data['product_option']) ) {
+					$this->load->model('extension/module/parent_child_options');					
+					$this->model_extension_module_parent_child_options->setProductOptionsParents($product_id, $data['product_option'], $pcop_temp_ids);
+				} elseif ( __FUNCTION__ == 'deleteProduct' ) {
+					$this->load->model('extension/module/parent_child_options');					
+					$this->model_extension_module_parent_child_options->removeProductPCOP($product_id);
+				}
+        
+        // >> Parent-child Options
+      
 		$this->cache->delete('product');
 	}
 
@@ -659,21 +766,6 @@ class ModelCatalogProduct extends Model {
           $this->load->model('extension/module/parent_child_options');
 					return $this->model_extension_module_parent_child_options->getProductOptionParents($product_option_id);
         }
-        
-        public function pcop_setParents($product_option_id, $product_option) {
-					$this->load->model('extension/module/parent_child_options');
-					$this->model_extension_module_parent_child_options->setProductOptionParents($product_option_id, $product_option);
-        }
-        
-        public function pcop_reinsertProductOption($product_option_id) {
-					$this->load->model('extension/module/parent_child_options');
-					return $this->model_extension_module_parent_child_options->reinsertProductOption($product_option_id);
-        }
-        
-        // get all product optionvs with values     
-        //public function pcop_getAllProductOptions($product_id) {
-        //  
-        //}
               
         // >> Parent-child Options
         
@@ -728,14 +820,14 @@ class ModelCatalogProduct extends Model {
 
 			$product_option_data[] = array(
 
-        // << Parent-child Options
-        'pcop' => $this->pcop_getParents($product_option['product_option_id']),
-        // >> Parent-child Options
-      
-
 				// Product Option Image PRO module <<
 				'poip_settings' => (isset($product_poip_settings[$product_option['product_option_id']]) ? $product_poip_settings[$product_option['product_option_id']] : false),
 				// >> Product Option Image PRO module
+      
+
+        // << Parent-child Options
+        'pcop' => $this->pcop_getParents($product_option['product_option_id']),
+        // >> Parent-child Options
       
 				'product_option_id'    => $product_option['product_option_id'],
 

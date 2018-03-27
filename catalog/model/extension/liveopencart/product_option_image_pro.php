@@ -10,91 +10,98 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 	
   public function getThemeName() {
 		
-		if ($this->theme_name == '') {
-		
+		if (!$this->theme_name) {
 			$theme_name = '';
-			$poip_settings = $this->getSettings();
-			if ( !empty($poip_settings['custom_theme_id']) && trim($poip_settings['custom_theme_id']) ) {
-				$theme_name = trim($poip_settings['custom_theme_id']);
+			
+			$settings = $this->getSettings();
+			if ( !empty($settings['custom_theme_id']) ) {
+				$theme_name = $settings['custom_theme_id'];
 			} else {
 			
-				if ( VERSION >= '2.2.0.0' ) {
-					if ($this->config->get('config_theme') == 'theme_default') {
-						$theme_name = $this->config->get('theme_default_directory');
-					} else {
-						$theme_name = substr($this->config->get('config_theme'), 0, 6) == 'theme_' ? substr($this->config->get('config_theme'), 6) : $this->config->get('config_theme') ;
-					}
-				} else {  
-					$theme_name = $this->config->get('config_template');
+				if ($this->config->get('config_theme') == 'theme_default' || $this->config->get('config_theme') == 'default') {
+					$theme_name = $this->config->get('theme_default_directory');
+				} else {
+					$theme_name = substr($this->config->get('config_theme'), 0, 6) == 'theme_' ? substr($this->config->get('config_theme'), 6) : $this->config->get('config_theme') ;
 				}
 				
-				if ($theme_name == 'BurnEngine') {
-					$theme_info = (array) $this->config->get( 'BurnEngine_theme');
-					if ($theme_info && !empty($theme_info['id']) ) {
-						$theme_name = $theme_name.'_'.$theme_info['id']; 
+				// shorten theme name
+				$themes_shorten = $this->getAdaptedThemes();
+				foreach ( $themes_shorten as $theme_shorten ) {
+					$theme_shorten_length = strlen($theme_shorten);
+					if ( substr($theme_name, 0, $theme_shorten_length) == $theme_shorten ) {
+						$theme_name = substr($theme_name, 0, $theme_shorten_length);
+						break;
 					}
 				}
+				
+				$theme_name = $this->replaceThemeNameIfSibling($theme_name);
+				
 			}
-			
-			// shorten theme name
-			$themes_shorten = array('so-shoppystore',
-															'so-lovefashion',
-															'OPC080185',
-															'OPC080186',
-															'OPC080189',
-															'OPC080190',
-															'OPC070162',
-															'OPC070164',
-															'OPC060130',
-															'OPC080193',
-															'tt_huge',
-															'tt_optima_',
-															'tt_greek_',
-															'aspire',
-															'tt_james_',
-															'OPC040_',
-															'tt_oxelar',
-															'OPC008_', // Modern by templatetrip
-															);
-			foreach ( $themes_shorten as $theme_shorten ) {
-				$theme_shorten_length = strlen($theme_shorten);
-				if ( substr($theme_name, 0, $theme_shorten_length) == $theme_shorten ) {
-					$theme_name = substr($theme_name, 0, $theme_shorten_length);
-					break;
-				}
-			}
-			
-			$themes_replacements = array(	'astrablue'=>'astra_multi',
-																		'astragreen'=>'astra_multi',
-																		'astragrey'=>'astra_multi',
-																		'astralavender'=>'astra_multi',
-																		'astrared'=>'astra_multi',
-																	);
-			if ( isset($themes_replacements[$theme_name]) ) {
-				$theme_name = $themes_replacements[$theme_name];
-			}
-			
 			$this->theme_name = $theme_name;
 		}
 		return $this->theme_name;
   }
-  
-  
-	/*
-	public function installed() {
-		
-		//$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "extension WHERE `type` = 'module' AND `code` = 'product_option_image_pro'");
-		//return $query->num_rows;
-    
-		if ( is_null($this->installed) ) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "extension WHERE `type` = 'module' AND `code` = 'product_option_image_pro'");
-			$this->installed = $query->num_rows;
+	
+	protected function replaceThemeNameIfSibling($theme_name) {
+		$sibling_file_name = $this->getBasicDirOfExtension().'theme_sibling/'.$theme_name.'.php';
+		if ( file_exists($sibling_file_name) ) {
+			require($sibling_file_name); // $sibling_main_theme should be defined there
+			if ( !empty($sibling_main_theme) ) {
+				return $sibling_main_theme;
+			}
 		}
-    // not working in mijoshop
-    //$query = $this->db->query('SHOW TABLES LIKE "' . DB_PREFIX . 'poip_option_image"');
-    return $this->installed;
-  }
-  */
+		return $theme_name;
+	}
+	
+	protected function getAdaptedThemes() {
+		
+		$dir_of_themes = $this->getBasicDirOfTemplates();
+		
+		$themes = glob($dir_of_themes . '*' , GLOB_ONLYDIR);
+		if ( $themes ) {
+			$themes = array_map( 'basename', $themes );
+			
+			if ( ($default_key = array_search('default', $themes)) !== false ) {
+				unset($themes[$default_key]);
+			}
+			
+			usort($themes, function($a, $b) {
+				return strlen($b) - strlen($a);
+			});
+			return $themes;
+		} else {
+			return array();
+		}
+		
+	}
+	
+	public function getBasicDirOfExtension() {
+		return DIR_TEMPLATE.'extension_liveopencart/product_option_image_pro/';
+	}
+	public function getBasicDirOfTemplates() {
+		return $this->getBasicDirOfExtension().'theme/';
+	}
+	public function getDirOfCurrentTemplate() {
+		$theme_dir = $this->getBasicDirOfTemplates().$this->getThemeName().'/';
+		if ( !file_exists($theme_dir) || !is_dir($theme_dir) ) {
+			$theme_dir = $this->getBasicDirOfTemplates().'default/';
+		} 
+		return $theme_dir;
+	}
+  
+  private function render($route, $data) {
+		// $this->registry is added for compatibility with d_twig_manager.xml
+		$template = new Template($this->registry->get('config')->get('template_engine'), $this->registry);
+				
+		foreach ($data as $key => $value) {
+			$template->set($key, $value);
+		}
+		
+		$output = $template->render( $route );
+		
+		return $output;
+	}
+
 	
 	public function addExtraDataToProductOptionValues($product_id, $p_product_option_values) {
 		$product_option_values = $p_product_option_values;
@@ -126,6 +133,8 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 	}
 	
 	
+	
+	/*
 	public function getTemplateIncludeFileName($suffix, $default_theme=false) {
 		
 		if ( $default_theme ) {
@@ -142,24 +151,54 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 		}
 		return '';
 	}
-  
-	public function addHeaderResources() {
+	*/
+	
+	private function getLinksForResources($scripts) {
+		$results = [];
+		foreach ( $scripts as $script ) {
+			$results[] = $this->liveopencart_poip->getResourceLinkPathWithVersion($script, 'catalog/');
+		}
+		return $results;
+	}
+	
+	public function getHeaderScripts() {
 		$scripts = array(	'view/theme/extension_liveopencart/product_option_image_pro/liveopencart.poip_common.js',
 											'view/theme/extension_liveopencart/product_option_image_pro/liveopencart.poip_list.js',
 										);
-		$this->addScripts( $scripts );
+		$custom_script = 'view/theme/extension_liveopencart/product_option_image_pro/theme/'.$this->getThemeName().'/theme_list.js';
+		if ( file_exists( DIR_APPLICATION.$custom_script ) ) {
+			$scripts[] = $custom_script;
+		}
+		return $this->getLinksForResources($scripts);
+	}
+  
+	public function addHeaderResources() {
+		$this->addScripts( $this->getHeaderScripts() );
+	}
+	
+	public function getProductPageScripts() {
+		$scripts = array();
+		if ( $this->liveopencart_poip->installed() ) {
+			$scripts[] = 'view/theme/extension_liveopencart/product_option_image_pro/liveopencart.poip_product.js';
+			
+			$custom_script = 'view/theme/extension_liveopencart/product_option_image_pro/theme/'.$this->getThemeName().'/theme_product.js';
+			if ( file_exists( DIR_APPLICATION.$custom_script ) ) {
+				$scripts[] = $custom_script;
+			}
+
+		}
+		return $this->getLinksForResources($scripts);
 	}
 	
 	public function addProductPageResources() {
-		$scripts = array(	'view/theme/extension_liveopencart/product_option_image_pro/liveopencart.poip_product.js',
-										);
-		$this->addScripts( $scripts );
+		$this->addScripts( $this->getProductPageScripts() );
 	}
 	
-	private function addScripts($scripts) {
-		foreach ( $scripts as $script ) {
-			if ( $this->liveopencart_poip->installed() ) {
-				$this->document->addScript( $this->liveopencart_poip->getResourceLinkPathWithVersion($script, 'catalog/') );
+	private function addScripts($scripts_links) {
+		if ( $this->liveopencart_poip->installed() ) {
+			foreach ( $scripts_links as $script_link ) {
+				$this->document->addScript( $script_link );
+				//$this->document->addScript( $this->liveopencart_poip->getResourceLinkPathWithVersion($script, 'catalog/') );
 			}
 		}
 	}
@@ -181,7 +220,7 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 			
 			$poip_results = $this->addOptionImagesToProductImages($results, $product_id, array() );
 			
-			if ( !$results ) { // fill with option images only if it is initially empty
+			if ( !$results ) { // fill with option images only if the array additional images is initially empty
 				$results = $poip_results['results']; 
 			} else { // leave only standard/initial images, but with all additional data
 				/*
@@ -204,6 +243,20 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 			$data['poip_images'] = $product_images;
 			$data['poip_product_option_ids'] = $this->getProductOptionsIdsWithImages($product_images);
 			$data['poip_images_by_povs'] = $this->getProductOptionImagesByValues($product_id);
+			
+			// for some themes using twig file for custom scripts
+			$poip_theme_script_route = 'extension_liveopencart/product_option_image_pro/theme/'.$this->getThemeName().'/theme_product';
+			if ( file_exists( DIR_TEMPLATE.$poip_theme_script_route.'.twig' ) ) {
+				$data['poip_theme_script'] = $this->render($poip_theme_script_route);
+			}
+			
+			// for old-style themes using .tpl engine (like Fastor)
+			$poip_include_tpl = DIR_APPLICATION.'view/theme/extension_liveopencart/product_option_image_pro/theme/'.$this->getThemeName().'/theme_product.tpl';
+			if ( file_exists( $poip_include_tpl ) ) {
+				$data['poip_include_tpl'] = $poip_include_tpl;
+			}
+			
+			
 			
 			$poip_ov = $this->getPOIPIdFromRequest();
 			if ( $poip_ov ) {
@@ -505,6 +558,21 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
     return $images;
     
   }
+	
+	protected function getArrayColumn($array, $subkey) { // old PHP does not have the function array_column
+		$result = array();
+		foreach ( $array as $key => $val ) {
+			$result[$key] = isset($val[$subkey]) ? $val[$subkey] : null;
+		}
+		return $result;
+	}
+	
+	protected function getArrayValueBySubKeyValue($array, $subkey, $subval) {
+		$key = array_search($subval, $this->getArrayColumn($array, $subkey));
+		if ( $key !== false ) {
+			return $array[$key];
+		}
+	}
   
   // $product_images_old - standard product images array
 	// $product_id
@@ -517,12 +585,10 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
     $product_images = array();
     $added_images = array();
 		
-		
-    
     $options_images = $this->getProductOptionImages($product_id, true);
     if ( isset($poip_settings['options_images_edit']) && $poip_settings['options_images_edit'] == 1 ) {
       // add in product images order
-      
+			
       foreach ($product_images_old as $image_old) {
         
 				$image_is_added_by_option = false;
@@ -532,11 +598,13 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 						
 						$image_is_added_by_option = true;
 			
-            if (!in_array($row['image'], $added_images)) {
-              $product_images[] = array('product_id'=>$product_id, 'image'=>$row['image'], 'sort_order'=>$row['sort_order']);
+            if ( !in_array($row['image'], $added_images) ) {
+							$product_image = $image_old;
+							$product_image['sort_order'] = $row['sort_order'];
+							$product_images[] = $product_image;
               $added_images[] = $row['image'];
-            }
-            foreach ($product_images as &$image) {
+						}
+            foreach ( $product_images as &$image ) {
               if ($image['image'] == $row['image']) {
                 if (!isset($image['product_option_id'])) $image['product_option_id'] = array();
                 if (!isset($image['product_option_value_id'])) $image['product_option_value_id'] = array();
@@ -554,7 +622,7 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
                     $image['title'] .= trim("\n".$row['option_name'].": ".$row['value_name']);
                   }
                 }
-                
+                break;
               }
             }
             unset($image);
@@ -569,8 +637,13 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
     
     foreach ($options_images as $row) {
       
-      if (!in_array($row['image'], $added_images)) {
-        $product_images[] = array('product_id'=>$product_id, 'image'=>$row['image'], 'sort_order'=>$row['sort_order']);
+      if ( !in_array($row['image'], $added_images) ) {
+				$product_image = $this->getArrayValueBySubKeyValue($product_images_old, 'image', $row['image']);
+				if ( !$product_image ) {
+					$product_image = array('product_id'=>$product_id, 'image'=>$row['image']);
+				}
+        $product_image['sort_order'] = $row['sort_order'];
+				$product_images[] = $product_image;
         $added_images[] = $row['image'];
       }
       foreach ($product_images as &$image) {
@@ -591,6 +664,7 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
               $image['title'] .= "\n".$row['option_name'].": ".$row['value_name'];
             }
           }
+					break;
         }
       }
       unset($image);
@@ -703,7 +777,7 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
   }
 	
 	//public function 
-	
+	/*
 	private function themeHasTemplateForProductLists() {
 		if ( is_null($this->themeHasTemplateForProductLists) ) {
 			$template_file = $this->getTemplateIncludeFileName('list');
@@ -711,13 +785,18 @@ class ModelExtensionLiveopencartProductOptionImagePro extends Model {
 		}
 		return $this->themeHasTemplateForProductLists;
 	}
+	*/
   
 	public function getCategoryImagesForController($product_id, $module_setting=false) { // returns images only if it is needed (old style option images in product lists displaying - not trough additional ajax call)
+		// always return option images in hope to do not make extra ajax calls
+		return $this->getCategoryImages($product_id, $module_setting);
+		/*
 		if ( !$this->themeHasTemplateForProductLists() ) {
 			return $this->getCategoryImages($product_id, $module_setting);
 		} else {
 			return array();
 		}
+		*/
 	}
 	
 	private function getImageSizeSetting($setting_name) {

@@ -179,7 +179,7 @@ REVOLUTION SLIDER
   .swiper-button-prev::before,
   .swiper-button-next::before {
     font-family: 'journal-icons';
-    content: "\e60f";
+    content: "\e093";
     font-size: 30px;
     position: absolute;
     top: 50%;
@@ -196,7 +196,7 @@ REVOLUTION SLIDER
   width: 30px; }
 
 .swiper-button-next::before {
-  content: "\e60e"; }
+  content: "\e094"; }
 
 .swiper-button-next {
   right: 0;

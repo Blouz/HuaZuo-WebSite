@@ -132,6 +132,8 @@ $_['error_permission']    = 'Warning: You do not have а permission to modify th
 
 $_['text_module_version'] = $_['module_name'].', version';
 $_['text_module_support'] = 'Developer: <a href="http://liveopencart.com" target="_blank">liveopencart.com</a> | Support, questions and suggestions: <a href=\"mailto:support@liveopencart.com\">support@liveopencart.com</a>';
-$_['module_page'] 				= '';
+$_['module_page'] 				= '
+<a href="https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=32391" target="_blank">'.$_['module_name'].' on opencart.com</a>
+';
 
 

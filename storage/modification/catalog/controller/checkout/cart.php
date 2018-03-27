@@ -339,6 +339,16 @@ class ControllerCheckoutCart extends Controller {
 
                 if (strpos($this->config->get('config_template'), 'journal2') === 0) {
                     $this->load->model('tool/image');
+
+				// << Product Option Image PRO module
+				liveopencart\poip::initLibrary($this->registry);
+				$poip_options = array();
+				foreach ($option as $po_id => $pov_id) {
+					$poip_options[] = array('product_option_id'=>$po_id, 'product_option_value_id'=>$pov_id);
+				}
+				$product_info['image'] = $this->liveopencart_poip->getModel()->getProductCartImage((int)$product_info['product_id'], $poip_options, $product_info['image']);
+				// >> Product Option Image PRO module
+      
                     $json['image'] = Journal2Utils::resizeImage($this->model_tool_image, $product_info['image'], $this->config->get('config_image_cart_width'), $this->config->get('config_image_cart_height'));
                 }
             

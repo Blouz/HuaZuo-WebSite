@@ -556,41 +556,46 @@ $(document).ready(function() {
 	});
 });
 //--></script> 
+{% if ( pcop_data ?? false ) %}
+					<!-- << Parent-child Options -->
+					<script type="text/javascript"><!--
+					
+						var pcop_data = {{ (pcop_data ?? 0) ? pcop_data|json_encode : '[]' }};
+						var pcop_theme_name = '{{ pcop_theme_name ?? '' }}';
+						
+						if ( typeof(pcop_front) != 'undefined' ) {
+							pcop_front.init(pcop_data, pcop_theme_name);
+						}
+					
+					//--></script>
+					<!-- >> Parent-child Options -->
+        {% endif %}
 
 				<!-- << Product Option Image PRO module -->
+				{% if ( poip_theme_script ?? false ) %}
+					{{ poip_theme_script }}
+				{% endif %}
+				
 				{% if poip_installed ?? false %}
 					<script  type = "text/javascript" ><!--
+						(function(){	
+							var poip_product_settings = {
+								product_option_ids 	: {{ poip_product_option_ids|json_encode }},
+								images 							: {{ poip_images|json_encode }},
+								images_by_povs			: {{ poip_images_by_povs|json_encode }},
+								module_settings 		: {{ poip_settings|json_encode }},
+								options_settings 		: {{ poip_product_settings|json_encode }},
+								poip_ov 						: {{ poip_ov ?? 0 }},
+								default_image_title : '{{ heading_title }}',
+							};
 						
-						var poip_product_settings = {
-							product_option_ids 	: {{ poip_product_option_ids|json_encode }},
-							images 							: {{ poip_images|json_encode }},
-							images_by_povs			: {{ poip_images_by_povs|json_encode }},
-							module_settings 		: {{ poip_settings|json_encode }},
-							options_settings 		: {{ poip_product_settings|json_encode }},
-							poip_ov 						: {{ poip_ov ?? 0 }},
-							default_image_title : '{{ heading_title }}',
-						};
-						poip_common.initObject(poip_product, poip_product_settings);
-					
+							var poip_product = getPoipProduct();
+							
+							poip_common.initObject(poip_product, poip_product_settings);
+						})();
 					//--></script>
 				{% endif %}
 				
       <!-- >> Product Option Image PRO module -->
       
-
-        
-        <!-- << Parent-child Options -->
-        <script type="text/javascript"><!--
-        
-          var pcop_data = {{ (pcop_data ?? 0) ? pcop_data|json_encode : '[]' }};
-					var pcop_theme_name = '{{ pcop_theme_name ?? '' }}';
-					
-					if ( typeof(pcop_front) != 'undefined' ) {
-						pcop_front.init(pcop_data, pcop_theme_name);
-					}
-        
-        //--></script>
-        <!-- >> Parent-child Options -->
-        
-      
-{{ footer }} 
+				{{ footer }} 

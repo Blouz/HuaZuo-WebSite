@@ -12,6 +12,7 @@ class ModelExtensionModuleParentChildOptions extends Model {
 		if ( !$this->parent_child_options_common ) {
 			$this->load->library('liveopencart/parent_child_options_common');
 		}
+		$this->checkTables();
 	}
 	
 	public function installed() {
@@ -38,6 +39,26 @@ class ModelExtensionModuleParentChildOptions extends Model {
 		$modified = filemtime( DIR_APPLICATION.$basic_path );
 		return $basic_path.'?v='.$modified; 
 	}
+	
+	public function getProductPageData() {
+		$data = array();
+		
+		if ( $this->installed() ) {
+			$data['pcop_installed'] = true;
+			
+			$this->language->load('extension/module/parent_child_options', 'liveopencart.pcop');
+			$pcop_language = $this->language->get('liveopencart.pcop');
+		
+			$data['pcop_entry_settings']              = $pcop_language->get('pcop_entry_settings');
+			$data['pcop_entry_no_parent_options']     = $pcop_language->get('pcop_entry_no_parent_options');
+			$data['pcop_entry_add_parent_option']     = $pcop_language->get('pcop_entry_add_parent_option');
+			$data['pcop_entry_or']                    = $pcop_language->get('pcop_entry_or');
+			$data['pcop_entry_remove_parent_option']  = $pcop_language->get('pcop_entry_remove_parent_option');
+			$data['pcop_texts']  											= $pcop_language->all();
+		}
+		
+		return $data;
+	}
   
   public function checkTables() {
     
@@ -48,12 +69,16 @@ class ModelExtensionModuleParentChildOptions extends Model {
 			CREATE TABLE IF NOT EXISTS
 				`".DB_PREFIX."pcop` (
 					`pcop_id` int(11) NOT NULL AUTO_INCREMENT,
+					`product_id` int(11) NOT NULL,
 					`product_option_id` int(11) NOT NULL,
+					`parent_product_option_id` int(11) NOT NULL,
 					`parent_option_id` int(11) NOT NULL,
 					`pcop_or` tinyint(1) NOT NULL,
 					PRIMARY KEY (`pcop_id`),
-					FOREIGN KEY (`product_option_id`) 		REFERENCES `'. DB_PREFIX .'product_option`(`product_option_id`) 			ON DELETE CASCADE,
-					FOREIGN KEY (`parent_option_id`) 			REFERENCES `'. DB_PREFIX .'option`(`option_id`) 			ON DELETE CASCADE
+					FOREIGN KEY (`product_id`) 								REFERENCES `'. DB_PREFIX .'product`(`product_id`) 										ON DELETE CASCADE,
+					FOREIGN KEY (`product_option_id`) 				REFERENCES `'. DB_PREFIX .'product_option`(`product_option_id`) 			ON DELETE CASCADE,
+					FOREIGN KEY (`parent_product_option_id`) 	REFERENCES `'. DB_PREFIX .'product_option`(`product_option_id`) 			ON DELETE CASCADE,
+					FOREIGN KEY (`parent_option_id`) 					REFERENCES `'. DB_PREFIX .'option`(`option_id`) 											ON DELETE CASCADE
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8
 		");
 		
@@ -61,14 +86,106 @@ class ModelExtensionModuleParentChildOptions extends Model {
 			CREATE TABLE IF NOT EXISTS
 				`".DB_PREFIX."pcop_value` (
 					`pcop_id` int(11) NOT NULL,
+					`product_id` int(11) NOT NULL,
 					`product_option_id` int(11) NOT NULL,
+					`parent_product_option_value_id` int(11) NOT NULL,
 					`parent_option_value_id` int(11) NOT NULL,
-					FOREIGN KEY (`product_option_id`) 		REFERENCES `'. DB_PREFIX .'product_option`(`product_option_id`) 			ON DELETE CASCADE,
-					FOREIGN KEY (`parent_option_value_id`) 			REFERENCES `'. DB_PREFIX .'option_value`(`option_value_id`) 			ON DELETE CASCADE
+					FOREIGN KEY (`product_id`) 											REFERENCES `'. DB_PREFIX .'product`(`product_id`) 													ON DELETE CASCADE,
+					FOREIGN KEY (`product_option_id`) 							REFERENCES `'. DB_PREFIX .'product_option`(`product_option_id`) 						ON DELETE CASCADE,
+					FOREIGN KEY (`parent_product_option_value_id`) 	REFERENCES `'. DB_PREFIX .'product_option_value`(`product_option_value_id`) ON DELETE CASCADE,
+					FOREIGN KEY (`parent_option_value_id`) 					REFERENCES `'. DB_PREFIX .'option_value`(`option_value_id`) 								ON DELETE CASCADE
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8
 		");
 		
+		$this->checkUpgrade();
   }
+	
+	public function checkUpgrade() {
+		
+		$upgrade_tables_to_use_po = false;
+		$query = $this->db->query("SHOW COLUMNS FROM `".DB_PREFIX."pcop` WHERE field='parent_product_option_id' ");
+		if ( !$query->num_rows ) {
+			$upgrade_tables_to_use_po = true;
+			$this->db->query("ALTER TABLE `".DB_PREFIX."pcop` ADD COLUMN `parent_product_option_id` int(11) NOT NULL " );
+		}
+		
+		$query = $this->db->query("SHOW COLUMNS FROM `".DB_PREFIX."pcop_value` WHERE field='parent_product_option_value_id' ");
+		if ( !$query->num_rows ) {
+			$upgrade_tables_to_use_po = true;
+			$this->db->query("ALTER TABLE `".DB_PREFIX."pcop_value` ADD COLUMN `parent_product_option_value_id` int(11) NOT NULL " );
+		}
+		
+		$query = $this->db->query("SHOW COLUMNS FROM `".DB_PREFIX."pcop` WHERE field='product_id' ");
+		if ( !$query->num_rows ) {
+			$upgrade_tables_to_use_po = true;
+			$this->db->query("ALTER TABLE `".DB_PREFIX."pcop` ADD COLUMN `product_id` int(11) NOT NULL " );
+		}
+		$query = $this->db->query("SHOW COLUMNS FROM `".DB_PREFIX."pcop_value` WHERE field='product_id' ");
+		if ( !$query->num_rows ) {
+			$upgrade_tables_to_use_po = true;
+			$this->db->query("ALTER TABLE `".DB_PREFIX."pcop_value` ADD COLUMN `product_id` int(11) NOT NULL " );
+		}
+		
+		if ( $upgrade_tables_to_use_po ) {
+			$this->upgradeTablesToUsePO();
+		}
+		
+	}
+	
+	// from the version 3.0.1 the module uses product_option_id and product_option_value_id for parent options
+	private function upgradeTablesToUsePO() {
+		
+		$query = $this->db->query("
+			UPDATE ".DB_PREFIX."pcop PCOP
+			SET PCOP.parent_product_option_id = (
+				SELECT PPO.product_option_id
+				FROM ".DB_PREFIX."product_option PO
+						,".DB_PREFIX."product_option PPO
+				WHERE PO.product_option_id = PCOP.product_option_id
+					AND PO.product_id = PPO.product_id
+					AND PPO.option_id = PCOP.parent_option_id
+				LIMIT 1
+			)
+			WHERE PCOP.parent_product_option_id = 0
+		");
+		
+		$query = $this->db->query("
+			UPDATE ".DB_PREFIX."pcop_value PCOPV
+			SET PCOPV.parent_product_option_value_id = (
+				SELECT PPOV.product_option_value_id
+				FROM ".DB_PREFIX."product_option PO
+						,".DB_PREFIX."product_option_value PPOV
+				WHERE PO.product_option_id = PCOPV.product_option_id
+					AND PO.product_id = PPOV.product_id
+					AND PPOV.option_value_id = PCOPV.parent_option_value_id
+				LIMIT 1
+			)
+			WHERE PCOPV.parent_product_option_value_id = 0
+		");
+		
+		$query = $this->db->query("
+			UPDATE ".DB_PREFIX."pcop PCOP
+			SET PCOP.product_id = (
+				SELECT PO.product_id
+				FROM ".DB_PREFIX."product_option PO
+				WHERE PO.product_option_id = PCOP.product_option_id
+				LIMIT 1
+			)
+			WHERE PCOP.product_id = 0
+		");
+		
+		$query = $this->db->query("
+			UPDATE ".DB_PREFIX."pcop_value PCOPV
+			SET PCOPV.product_id = (
+				SELECT PO.product_id
+				FROM ".DB_PREFIX."product_option PO
+				WHERE PO.product_option_id = PCOPV.product_option_id
+				LIMIT 1
+			)
+			WHERE PCOPV.product_id = 0
+		");
+		
+	}
 	
 	public function getProductOptionParents($product_option_id) {
 		
@@ -100,7 +217,9 @@ class ModelExtensionModuleParentChildOptions extends Model {
 																							");
 			$row_pcop['values'] = array();
 			foreach ($query_pcop_values->rows as $row_pcop_value) {
-				$row_pcop['values'][] = $row_pcop_value['parent_option_value_id'];
+				$row_pcop['values'][] = $row_pcop_value['parent_product_option_value_id'];
+				//$row_pcop['values'][] = $row_pcop_value;
+				//$row_pcop['values'][] = $row_pcop_value['parent_option_value_id'];
 			}
 		
 			$pcop[] = $row_pcop;
@@ -110,7 +229,85 @@ class ModelExtensionModuleParentChildOptions extends Model {
 		
 	}
 	
-	public function setProductOptionParents($product_option_id, $product_option) {
+	private function getIdFromTempIds($temp_ids, $data, $set_of_ids, $temp_key, $old_key) {
+		if ( !empty($data[$temp_key]) ) { // for product add/edit (based on temp id give by PCOP js-script on the product page)
+			$temp_key = $data[$temp_key];
+		} else { // for product copy (based on temp id give by PCOP script in product model functions: addProduct editProduct)
+			$temp_key = $data[$old_key];
+		}
+		if ( isset($temp_ids[$set_of_ids][$temp_key]) ) {
+			return $temp_ids[$set_of_ids][$temp_key];
+		} else {
+			return false;
+		}
+	}
+	
+	public function removeProductPCOP($product_id) {
+		$this->db->query("DELETE FROM `".DB_PREFIX."pcop` 			WHERE product_id = '" . (int)$product_id . "' ");
+		$this->db->query("DELETE FROM `".DB_PREFIX."pcop_value` WHERE product_id = '" . (int)$product_id . "' ");
+	}
+	/*
+	public function insertProductOptionAndReturnId() {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "product_option ");
+		return $this->db->getLastId();
+	}
+	*/
+	public function setProductOptionsParents($product_id, $product_options, $temp_ids) {
+		
+		if ( !$this->installed() ) {
+			return;
+		}
+		
+		$this->removeProductPCOP($product_id);
+		
+		foreach ( $product_options as $product_option ) {
+			if (isset($product_option['pcop'])) {
+				
+				$product_option_id = $this->getIdFromTempIds($temp_ids, $product_option, 'po', 'product_option_temp_id', 'product_option_id');
+				
+				foreach ($product_option['pcop'] as $pcop) {
+					
+					$parent_product_option_id = $this->getIdFromTempIds($temp_ids, $pcop, 'po', 'parent_product_option_temp_id', 'parent_product_option_id');
+					
+					if ( $parent_product_option_id !== false ) {
+					
+						$query = $this->db->query("SELECT * FROM `".DB_PREFIX."pcop` WHERE pcop_id = ".(int)$pcop['pcop_id']." AND product_id != ".(int)$product_id." ");
+						if ($query->num_rows) { //possible copying
+							$pcop['pcop_id'] = 0;
+						}
+					
+						$this->db->query("INSERT INTO `".DB_PREFIX."pcop`
+															SET product_id = '".(int)$product_id."'
+																, product_option_id = '" . (int)$product_option_id . "'
+																, parent_product_option_id = '" . (int)$parent_product_option_id . "'
+																, parent_option_id = '" . (int)$this->getOptionIdByProductOptionId($parent_product_option_id) . "'
+																, pcop_id = '" . (int)$pcop['pcop_id'] . "'
+																, pcop_or = '" . ( isset($pcop['pcop_or']) ? (int)$pcop['pcop_or'] : 0 ) . "'
+															");
+															
+						$pcop_id = $this->db->getLastId();                  
+																						
+						if ( isset($pcop['values']) && $pcop['values'] ) {
+							
+							foreach ($pcop['values'] as $parent_option_value_key) {
+								$parent_product_option_value_id = isset($temp_ids['pov'][$parent_option_value_key]) ? $temp_ids['pov'][$parent_option_value_key] : 0;
+								$this->db->query("INSERT INTO `".DB_PREFIX."pcop_value`
+																	SET product_id = '" . (int)$product_id . "'
+																		, product_option_id = '" . (int)$product_option_id . "'
+																		, parent_product_option_value_id = '" . (int)$parent_product_option_value_id . "'
+																		, parent_option_value_id = '" . (int)$this->getOptionValueIdByProductOptionValueId($parent_product_option_value_id) . "'
+																		, pcop_id = '" . (int)$pcop_id . "'
+																	");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/*
+	public function setProductOptionParents($product_option_id, $product_option, $temp_ids=array()) {
 		
 		if ( !$this->installed() ) {
 			return;
@@ -153,7 +350,8 @@ class ModelExtensionModuleParentChildOptions extends Model {
 		}
 		
 	}
-	
+	*/
+	/*
 	public function reinsertProductOption($product_option_id) {
 		
 		if ( !$this->installed() ) {
@@ -172,7 +370,8 @@ class ModelExtensionModuleParentChildOptions extends Model {
 			$this->db->query("INSERT INTO ".DB_PREFIX."product_option SET ".$sql_set);
 		}
 	}
-	
+	*/
+	/*
 	public function getAllProductOptionsByProductId($product_id) {
 		
 		$product_option_data = array();
@@ -232,6 +431,7 @@ class ModelExtensionModuleParentChildOptions extends Model {
 
 		return $product_option_data;
 	}
+	*/
   
   public function importData($data, $delete_before_import, $use_po_ids) {
     
@@ -300,7 +500,9 @@ class ModelExtensionModuleParentChildOptions extends Model {
 			}
       
       $this->db->query("INSERT INTO ".DB_PREFIX."pcop
-                        SET product_option_id = ".(int)$product_option_id."
+                        SET product_id = ".(int)$row['product_id']."
+													, product_option_id = ".(int)$product_option_id."
+													, parent_product_option_id = ".(int)$parent_product_option_id."
                           , parent_option_id = ".(int)$parent_option_id."
                           , pcop_or = ".(int)$row['pcop_or']."
                         ");
@@ -316,15 +518,18 @@ class ModelExtensionModuleParentChildOptions extends Model {
       foreach ( $vals_ids as $val_id ) {
         
 				if ($use_po_ids) {
-					$parent_option_value_id = $this->getOptionValueIdByProductOptionValueId($val_id);;
+					$parent_product_option_value_id = (int)$val_id;
+					$parent_option_value_id = $this->getOptionValueIdByProductOptionValueId($parent_product_option_value_id);;
 				} else {
 					$parent_option_value_id = (int)$val_id;
-					//$product_option_value_id = $this->getProductOptionValueIdByOptionValueId($row['product_id'], $parent_product_option_id, $val_id);
+					$parent_product_option_value_id = $this->getProductOptionValueIdByOptionValueId($row['product_id'], $parent_product_option_id, $val_id);
 				}
         
         $this->db->query("INSERT INTO ".DB_PREFIX."pcop_value
                           SET pcop_id = ".(int)$pcop_id."
+														, product_id = ".(int)$row['product_id']."
                             , product_option_id = ".(int)$product_option_id."
+														, parent_product_option_value_id = ".(int)$parent_product_option_value_id."
                             , parent_option_value_id = ".(int)$parent_option_value_id."
                           ");
         
@@ -470,7 +675,7 @@ class ModelExtensionModuleParentChildOptions extends Model {
   }
   
   public function getCurrentVersion() {
-    return '3.0.0';
+    return '3.0.2';
   }
   
   public function install() {

@@ -4,6 +4,7 @@
 var poip_list = {
 	
 	proxied : false,
+	custom_methods : {},
 	
 	wait_server_answer : false,
 	image_cache : {},
@@ -20,6 +21,7 @@ var poip_list = {
 	},
 	
 	changeProductImageByThumb : function(thumb_elem) { // showThumb
+		
 		var $thumb_elem = $(thumb_elem);
 						
 		if ( $thumb_elem.attr('data-poip-thumb') && $thumb_elem.attr('data-poip-product-index')) {

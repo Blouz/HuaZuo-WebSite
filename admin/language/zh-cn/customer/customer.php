@@ -52,8 +52,8 @@ $_['column_action']             = '操作';
 
 // Entry
 $_['entry_customer_group']      = '客户等级';
-$_['entry_firstname']           = '姓氏';
-$_['entry_lastname']            = '名字';
+$_['entry_firstname']           = '姓名';
+$_['entry_lastname']            = '性别';
 $_['entry_email']               = 'E-Mail';
 $_['entry_telephone']           = '电话';
 $_['entry_newsletter']          = '订阅邮件';

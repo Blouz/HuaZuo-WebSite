@@ -79,14 +79,15 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			$data['address1'] = html_entity_decode($order_info['payment_address_1'], ENT_QUOTES, 'UTF-8');
 			$data['address2'] = html_entity_decode($order_info['payment_address_2'], ENT_QUOTES, 'UTF-8');
 			$data['city'] = html_entity_decode($order_info['payment_city'], ENT_QUOTES, 'UTF-8');
+			$data['state'] = html_entity_decode($order_info['payment_zone_code'], ENT_QUOTES, 'UTF-8');
 			$data['zip'] = html_entity_decode($order_info['payment_postcode'], ENT_QUOTES, 'UTF-8');
 			$data['country'] = $order_info['payment_iso_code_2'];
 			$data['email'] = $order_info['email'];
 			$data['invoice'] = $this->session->data['order_id'] . ' - ' . html_entity_decode($order_info['payment_firstname'], ENT_QUOTES, 'UTF-8') . ' ' . html_entity_decode($order_info['payment_lastname'], ENT_QUOTES, 'UTF-8');
 			$data['lc'] = $this->session->data['language'];
 			$data['return'] = $this->url->link('checkout/success');
-			$data['notify_url'] = $this->url->link('extension/payment/pp_standard/callback', '', true);
-			$data['cancel_return'] = $this->url->link('checkout/checkout', '', true);
+			$data['notify_url'] = $this->url->link('extension/payment/pp_standard/callback');
+			$data['cancel_return'] = $this->url->link('checkout/checkout');
 
 			if (!$this->config->get('payment_pp_standard_transaction')) {
 				$data['paymentaction'] = 'authorization';

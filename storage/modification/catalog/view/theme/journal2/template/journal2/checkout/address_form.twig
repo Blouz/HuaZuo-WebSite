@@ -62,7 +62,10 @@
                id="input-{{ type }}-address-2" class="form-control"/>
       </div>
       <div class="form-group required">
-        
+        <label class="col-sm-2 control-label" for="input-{{ type }}-city">{{ entry_city }}</label>
+
+        <input type="text" name="{{ type }}_city" value="{{ staticCall('Journal2Utils', 'getProperty', [order_data, type ~ '_city', '']) }}" placeholder="{{ entry_city }}" id="input-{{ type }}-city"
+               class="form-control"/>
       </div>
       <div class="form-group required">
         <label class="col-sm-2 control-label" for="input-{{ type }}-postcode">{{ entry_postcode }}</label>
@@ -96,8 +99,8 @@
       </div>
 
 		<div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-{{ type }}-city">{{ entry_city }} </label>
-		    <select name="{{ type }}_city" id="{{ type }}_input-city" class="form-control">
+                <label class="col-sm-2 control-label" for="input-{{ type }} -city">{{ entry_city }} </label>
+		    <select name="{{ type }} _city" id="input-city" class="form-control">
               </select>
             </div>	
         
@@ -204,23 +207,20 @@
 
               <script type="text/javascript"><!-- 
               $( document ).ready(function() {   
-            $(document).on('change', 'form.form-{{ type }}  select[name=\'{{ type }}_zone_id\']',  function() {
+            $(document).on('change', 'form.form-{{ type }}  select[name=\'{{ type }} _zone_id\']',  function() {
 		
            $.ajax({
-                    url: 'index.php?route=extension/module/city&zone_id=' + this.value,
+                    url: 'index.php?route=city/city&zone_id=' + this.value,
                     dataType: 'json',
                     beforeSend: function() {
-                            $('form.form-{{ type }}  select[name=\'{{ type }}_zone_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+                            $('form.form-{{ type }}  select[name=\'{{ type }} _zone_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
                     },
                     complete: function() {
                             $('.fa-spin').remove();
                     },
                     success: function(json) {
 		   
-                    html = '';
-                    if(json['cities'] && json['cities'].length != 1) {
-                            html = '<option value="">{{ text_select }} </option>';
-                    }
+                    html = '<option value="">{{ text_select }} </option>';
 
                             if (json['cities'] && json['cities'] != '') {
                                     for (i = 0; i < json['cities'].length; i++) {
@@ -236,7 +236,7 @@
                                     html += '<option value="0" selected="selected">{{ text_none }} </option>';
                             }
 
-                            $('form.form-{{ type }}  select[name=\'{{ type }}_city\']').html(html);
+                            $('form.form-{{ type }}  select[name=\'{{ type }} _city\']').html(html);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                             alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -296,9 +296,6 @@
           }
 
           $('form.form-{{ type }} select[name=\'{{ type }}_zone_id\']').html(html);
-
-              $('form.form-{{ type }}  select[name=\'{{ type }}_zone_id\']').trigger('change');
-        
 
           if (!first) {
             $(document).trigger('journal_checkout_address_changed', '{{ type }}');

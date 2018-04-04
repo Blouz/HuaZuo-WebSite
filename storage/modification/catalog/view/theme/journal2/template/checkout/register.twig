@@ -502,8 +502,7 @@ $('#collapse-payment-address button[id^=\'button-payment-custom-field\']').on('c
                     },
                     success: function(json) {
 
-                            html = '<option value="">{{ text_select }} </option>';
-                    
+                    html = '<option value="">{{ text_select }} </option>';
 
                             if (json['cities'] && json['cities'] != '') {
                                     for (i = 0; i < json['cities'].length; i++) {

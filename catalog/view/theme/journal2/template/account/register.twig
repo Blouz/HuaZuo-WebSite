@@ -1,3 +1,4 @@
+<!--catalog/view/theme/journal2/template/account  -->
 {{ header }}
 <div id="container" class="container j-container">
   <ul class="breadcrumb">
@@ -52,11 +53,11 @@
             </div>
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-lastname">{{ entry_lastname }}</label>
-              <div class="col-sm-10">
-                <input type="text" name="lastname" value="{{ lastname }}" placeholder="{{ entry_lastname }}" id="input-lastname" class="form-control"/>
-                {% if error_lastname %}
-                  <div class="text-danger">{{ error_lastname }}</div>
-                {% endif %} </div>
+             <select>
+
+                <option value ="man">男士</option>
+                <option value ="woman">女士</option>
+             </select>
             </div>
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-email">{{ entry_email }}</label>

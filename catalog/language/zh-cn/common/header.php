@@ -5,12 +5,11 @@
  * @author           opencart.cn <support@opencart.cn>
  * @created          2016-10-23 11:22:04
  * @modified         2016-11-05 17:37:18
- * catalog/language/zh-cn/common/header.php
  */
 
 // Text
 $_['text_home']           = '首页';
-$_['text_wishlist']       = '收藏';
+$_['text_wishlist']       = '收藏（%s）';
 $_['text_shopping_cart']  = '购物车';
 $_['text_category']       = '商品分类';
 $_['text_account']        = '会员中心';

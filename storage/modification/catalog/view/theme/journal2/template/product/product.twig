@@ -1,3 +1,4 @@
+<!--catalog/view/theme/journal2/template/product/product.twig  -->
 {{ header }}
 <div id="container" class="container j-container">
   <ul class="breadcrumb">
@@ -19,7 +20,7 @@
       {% endif %}
       {{ content_top }}
       <div class="row product-info {{ journal2.settings.get('split_ratio') }}">
-        <div class="left">
+        <div class="left" style="height:550px;position:relative;">
           {% if thumb %}
             <div class="image">
               {% for label, name in labels %}
@@ -35,7 +36,7 @@
             <div id="product-gallery" class="image-additional {{ journal2.settings.get('product_page_gallery_carousel') ? 'journal-carousel' : 'image-additional-grid' }}">
               {% if journal2.settings.get('product_page_gallery_carousel') %}
               <div class="swiper">
-                <div class="swiper-container" {% if journal2.settings.get('rtl') %} dir="rtl" {% endif %}>
+                <div class="swiper-container swiper-container-vertical">
                   <div class="swiper-wrapper">
                     {% endif %}
                     {% if thumb %}
@@ -48,8 +49,6 @@
                   </div>
                 </div>
                 {% if journal2.settings.get('product_page_gallery_carousel_arrows') != 'never' %}
-                <div class="swiper-button-next swiper-hidden"></div>
-                <div class="swiper-button-prev swiper-hidden"></div>
                 {% endif %}
               </div>
               {% endif %}
@@ -107,7 +106,18 @@
             </div>
           {% endif %}
           <meta itemprop="description" content="{{ journal2.settings.get('product_description') }}"/>
+
+          <!-- 评论 -->
           <div class="product-tabs">
+          <div class="recommend" style="background-color:#F3F3F3;height:280px">
+            <div class="recommendTop">
+              <span>推荐装裱</span>
+            </div>
+            <!-- 推荐装裱 -->
+            <div class="recommendCon">
+                
+            </div>
+          </div>
             {% if journal2.settings.get('share_buttons_status') and journal2.settings.get('share_buttons_position') == 'bottom' and (journal2.settings.get('config_share_buttons', []) | length > 0) %}
               <div class="social share-this">
                 <div class="social-loaded">
@@ -120,7 +130,7 @@
                 </div>
               </div>
             {% endif %}
-            <ul id="tabs" class="nav nav-tabs htabs">
+            <ul id="tabs" class="nav nav-tabs htabs" style="margin-top:50px">
               {% set is_active = true %}
               {% if description and not journal2.settings.get('hide_product_description') %}
                 <li {% if is_active %} class="active" {% set is_active = false %} {% endif %}><a href="#tab-description" data-toggle="tab">{{ tab_description }}</a></li>
@@ -305,11 +315,10 @@
             {% endif %}
             {% if options %}
               <div class="options {{ journal2.settings.get('product_page_options_push_classes') }}">
-                <h3>{{ text_option }}</h3>
                 {% for option in options %}
                   {% if option.type == 'select' %}
                     <div class="option form-group{% if option.required %} required {% endif %} option-{{ option.type }}">
-                      <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+                     
                       <select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-control">
                         <option value="">{{ text_select }}</option>
                         {% for option_value in option.product_option_value %}
@@ -323,7 +332,7 @@
                   {% endif %}
                   {% if option.type == 'radio' %}
                     <div class="option form-group{% if option.required %} required {% endif %} option-{{ option.type }}">
-                      <label class="control-label">{{ option.name }}</label>
+                     
                       <div id="input-option{{ option.product_option_id }}"> {% for option_value in option.product_option_value %}
                           <div class="radio">
                             <label>
@@ -466,10 +475,14 @@
                 });
               </script>
               </span>
-                  <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="button"><span class="button-cart-text">{{ button_cart }}</span></button>
+             
                 {% endif %}
               </div>
             </div>
+             <div class="butt1">
+              <button type="button" id="button-buy" style="width:180px;height:40px;font-size:16px;color: black;border-radius:2px;border:2px solid black;position:relative;top:2px;cursor: pointer;">立即购买</button>
+                      <button style="width:180px;height:40px;" type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="button"><span class="button-cart-text">{{ button_cart }}</span></button>
+                    </div>
             {% if minimum > 1 %}
               <div class="alert alert-info information"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>
             {% endif %}
@@ -480,11 +493,7 @@
               </span>
             </div>
             {% if review_status %}
-              <div class="rating">
-                <p>{% for i in 1..5 %}
-                    {% if rating < i %}<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>{% else %}<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>{% endif %}
-                  {% endfor %} <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">{{ reviews }}</a> / <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">{{ text_write }}</a></p>
-              </div>
+             
             {% endif %}
             {% if journal2.settings.get('share_buttons_status') and journal2.settings.get('share_buttons_position') == 'right' and (journal2.settings.get('config_share_buttons', []) | length > 0) %}
               <div class="social share-this">
@@ -739,6 +748,61 @@
           }
 
           $('#cart ul').load('index.php?route=common/cart/info ul li');
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  });
+    $('#button-buy').on('click', function() {
+    $.ajax({
+      url: 'index.php?route=checkout/cart/add',
+      type: 'post',
+      data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+      dataType: 'json',
+      beforeSend: function() {
+        $('#button-cart').button('loading');
+      },
+      complete: function() {
+        $('#button-cart').button('reset');
+      },
+      success: function(json) {
+        $('.alert-dismissible, .text-danger').remove();
+        $('.form-group').removeClass('has-error');
+
+        if (json['error']) {
+          if (json['error']['option']) {
+            for (i in json['error']['option']) {
+              var element = $('#input-option' + i.replace('_', '-'));
+
+              if (element.parent().hasClass('input-group')) {
+                element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+              } else {
+                element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+              }
+            }
+          }
+
+          if (json['error']['recurring']) {
+            $('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+          }
+
+          // Highlight any found errors
+          $('.text-danger').parent().addClass('has-error');
+        }
+
+        if (json['success']) {
+         
+
+          $('#cart-total').html(json['total']);
+
+          if (Journal.scrollToTop) {
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+          }
+
+          $('#cart ul').load('index.php?route=common/cart/info ul li');
+          window.location.href="index.php?route=checkout/checkout"
         }
       },
       error: function(xhr, ajaxOptions, thrownError) {

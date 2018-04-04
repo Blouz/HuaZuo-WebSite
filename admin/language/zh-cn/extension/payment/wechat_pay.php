@@ -8,13 +8,13 @@
  */
 
 // Heading
-$_['heading_title']                  = '微信支付';
+$_['heading_title']                  = '微信扫码支付';
 
 // Text
 $_['text_extension']                 = '扩展';
-$_['text_success']                   = '成功：微信支付已修改！';
+$_['text_success']                   = '成功：微信扫码支付已修改！';
 $_['text_edit']                      = '编辑';
-$_['text_wechat_pay']                = '<a target="_BLANK" href="https://pay.weixin.qq.com"><img src="view/image/payment/wechat.png" alt="微信支付" title="微信支付" style="border: 1px solid #EEEEEE;" /></a>';
+$_['text_wechat_pay']                = '<a target="_BLANK" href="https://pay.weixin.qq.com"><img src="view/image/payment/wechat.png" alt="微信扫码支付" title="微信扫码支付" style="border: 1px solid #EEEEEE;" /></a>';
 
 // Entry
 $_['entry_app_id']                   = 'App ID';
@@ -32,10 +32,10 @@ $_['entry_sort_order']               = '排序';
 // Help
 $_['help_total']                     = '订单金额必须大于此金额时此支付方式才会显示。';
 $_['help_currency']                  = '用户支付的货币单位';
-$_['help_wechat_pay_setup']          = '了解如何<a target="_blank" href="http://www.opencart.cn/docs/wechat-pay">配置微信支付</a>';
+$_['help_wechat_pay_setup']          = '了解如何<a target="_blank" href="http://www.opencart.cn/docs/wechat-pay">配置微信扫码支付</a>';
 
 // Error
-$_['error_permission']               = '错误：您没有权限修改微信支付！';
+$_['error_permission']               = '错误：您没有权限修改微信扫码支付！';
 $_['error_app_id']                   = '请输入 App ID';
 $_['error_app_secret']               = '请输入 App Secret';
 $_['error_mch_id']                   = '请输入 Merchant ID';

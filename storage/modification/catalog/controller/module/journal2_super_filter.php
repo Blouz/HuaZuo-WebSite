@@ -837,7 +837,28 @@ class ControllerModuleJournal2SuperFilter extends Controller {
             	$description_limit = 100;
 			}
 
-            $this->data['products'][] = array(
+            // << Live Price
+				$this->load->model('extension/liveopencart/liveprice');
+				
+				if ( isset($result) ) {
+					$lp_product = $result;
+				} else {
+					$lp_product = $product_info;
+				}
+				
+				$prices = $this->model_extension_liveopencart_liveprice->getPriceStartingFrom( $lp_product, $price, $special, isset($tax) ? $tax : false );
+				if ( $prices ) {
+					$price = $prices['f_price'];
+					if ($prices['f_special']) {
+						$special = $prices['f_special'];
+					}
+					if ( isset($tax) ) {
+						$tax = $prices['f_tax'];
+					}
+				}
+				// >> Live Price
+				
+				$this->data['products'][] = array(
                 'product_id'  => $result['product_id'],
 
 				// << Product Option Image PRO module

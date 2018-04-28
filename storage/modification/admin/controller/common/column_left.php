@@ -181,6 +181,23 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 								
+
+      $this->load->model('setting/extension');
+
+      if (!in_array('universal_import', $this->model_setting_extension->getInstalled('module'))) {
+        $marketplace[] = array(
+					'name'	   => '<img style="vertical-align:top" src="view/universal_import/img/icon.png"/> Install Universal Import Pro',
+					'href'     => $this->url->link('extension/extension/module/install', 'extension=universal_import&redir=1&user_token=' . $this->session->data['user_token'], true),
+					'children' => array()		
+				);
+      } else if ($this->user->hasPermission('access', 'module/pdf_invoice')) {
+				$marketplace[] = array(
+					'name'	   => '<img style="vertical-align:top" src="view/universal_import/img/icon.png"/> Universal Import Pro',
+					'href'     => $this->url->link('module/universal_import', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()		
+				);
+			}
+      
 			if ($this->user->hasPermission('access', 'marketplace/modification')) {
 				$marketplace[] = array(
 					'name'	   => $this->language->get('text_modification'),

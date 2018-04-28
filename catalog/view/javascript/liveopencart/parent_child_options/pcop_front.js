@@ -16,6 +16,8 @@ pcop_front = {
 			return;
 		}
 		
+		console.debug('init');
+		
 		if ( p_pcop_data ) {
 			pcop_front.data = p_pcop_data;
 		}

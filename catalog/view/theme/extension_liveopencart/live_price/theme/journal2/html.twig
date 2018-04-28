@@ -1,0 +1,23 @@
+<meta itemprop="itemCondition" content="http://schema.org/NewCondition"/>
+<meta itemprop="priceCurrency" content="{{ journal2.settings.get('product_price_currency') }}"/>
+<meta itemprop="price" content="{{ journal2.settings.get('product_price') }}"/>
+{% if journal2.settings.get('product_in_stock') == 'yes' %}
+	<link itemprop="availability" href="http://schema.org/InStock"/>
+{% endif %}
+{% if not special %}
+	<li class="product-price">{{ price }}</li>
+{% else %}
+	<li class="price-old">{{ price }}</li>
+	<li class="price-new">{{ special }}</li>
+{% endif %}
+{% if tax %}
+	<li class="price-tax">{{ text_tax }} {{ tax }}</li>
+{% endif %}
+{% if points %}
+	<li class="reward">
+		<small>{{ text_points }} {{ points }}</small>
+	</li>
+{% endif %}
+{% for discount in discounts %}
+	<li class="discounts">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</li>
+{% endfor %}

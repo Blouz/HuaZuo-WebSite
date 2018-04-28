@@ -136,6 +136,11 @@ class ControllerExtensionExtensionModule extends Controller {
 		// Compatibility code for old extension folders
 		$files = glob(DIR_APPLICATION . 'controller/extension/module/*.php');
 
+    if (version_compare(VERSION, '3', '>=')) {
+      $files[] = 'universal_import';
+    }
+			
+
 		if ($files) {
 			foreach ($files as $file) {
 				$extension = basename($file, '.php');
@@ -162,6 +167,19 @@ class ControllerExtensionExtensionModule extends Controller {
 					);
 				}
 
+
+        if ($extension == 'universal_import') {
+          ${'data'}['extensions'][] = array(
+            'name'      => (version_compare(VERSION, '3', '>=') ? $this->language->get('extension')->get('heading_title') : $this->language->get('heading_title')),
+            'module'    => $module_data,
+            'install'   => $this->url->link('extension/extension/module/install', (isset($this->session->data['user_token']) ? 'user_token='.$this->session->data['user_token'] : 'token='.$this->session->data['token']) . '&extension=' . $extension, true),
+            'uninstall' => $this->url->link('extension/extension/module/uninstall', (isset($this->session->data['user_token']) ? 'user_token='.$this->session->data['user_token'] : 'token='.$this->session->data['token']) . '&extension=' . $extension, true),
+            'installed' => in_array($extension, $extensions),
+            'edit'      => $this->url->link('module/' . $extension, (isset($this->session->data['user_token']) ? 'user_token='.$this->session->data['user_token'] : 'token='.$this->session->data['token']), true)
+          );
+          continue;
+        }
+			
 				$data['extensions'][] = array(
 					'name'      => $this->language->get('extension')->get('heading_title'),
 					'status'    => $this->config->get('module_' . $extension . '_status') ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),

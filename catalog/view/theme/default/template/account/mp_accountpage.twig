@@ -1,0 +1,338 @@
+{{ header }}
+<div id="container" class="container {{ themeclass == 'journal-account' ? 'j-container' : '' }}">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if success %}
+  <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+    	{{ themeclass == 'journal-account' ? column_right : '' }}
+     	<div class="mpacc-dashboard">
+     		{% if show_total_orders or show_total_balance or show_total_wishlist or show_total_rewardpoints or show_total_downloads %}
+	      	<div class="mpacc-stats">
+	      		<ul class="list-unstyled">
+	      			{% if show_total_orders %}
+	      			<li>
+	      				<div class="inner-stats">
+		      				<div class="mpacc-stats-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
+		      				<div class="stats-text">
+			      				<div class="totals">
+			      					<div class="border"></div>
+			      					<h3>{{ title_total_orders }}</h3>
+			      				</div>
+			      				<h2 class="hovicon effect-4 sub-b"><span class="count">{{ total_orders }}</span> <small>{{ text_orders }}</small></h2>
+			      				<a href="{{ order_link }}" class="btn-vw">{{ button_viewall }}</a>
+			      			</div>
+	      				</div>
+	      			</li>
+	      			{% endif %}
+	      			{% if show_total_balance %}
+	      			<li>
+	      				<div class="inner-stats">
+		      				<div class="mpacc-stats-icon"><i class="fa fa-usd" aria-hidden="true"></i></div>
+		      				<div class="stats-text">
+			      				<div class="totals">
+			      					<div class="border"></div>
+			      					<h3>{{ title_total_transaction }}</h3>
+			      				</div>
+			      				<h2 class="hovicon effect-4 sub-b"><span class="">{{ total_transactions }}</span> <small>{{ text_balance }}</small></h2>
+			      				<a href="{{ transaction_link }}" class="btn-vw">{{ button_viewall }}</a>
+	      					</div>
+	      				</div>
+	      			</li>
+	      			{% endif %}
+	      			{% if show_total_wishlist %}
+	      			<li>
+	      				<div class="inner-stats">
+		      				<div class="mpacc-stats-icon"><i class="fa fa-heart" aria-hidden="true"></i></div>
+		      				<div class="stats-text">
+			      				<div class="totals">
+			      					<div class="border"></div>
+			      					<h3>{{ title_total_wishlist }}</h3>
+			      				</div>
+			      				<h2 class="hovicon effect-4 sub-b"><span class="count">{{ total_wishlist }}</span> <small>{{ text_wishlist }}</small></h2>
+			      				<a href="{{ wishlist_link }}" class="btn-vw">{{ button_viewall }}</a>
+			      			</div>	
+	      				</div>
+	      			</li>
+	      			{% endif %}
+	      			{% if show_total_rewardpoints %}
+	      			<li>
+	      				<div class="inner-stats">
+		      				<div class="mpacc-stats-icon"><i class="fa fa-gift" aria-hidden="true"></i></div>
+		      				<div class="stats-text">
+			      				<div class="totals">
+			      					<div class="border"></div>
+			      					<h3>{{ title_total_reward_points }}</h3>
+			      				</div>
+			      				<h2 class="hovicon effect-4 sub-b"><span class="count">{{ total_reward_points }}</span> <small>{{ text_reward_points }}</small></h2>
+			      				<a href="{{ reward_points_link }}" class="btn-vw">{{ button_viewall }}</a>
+			      			</div>	
+	      				</div>
+	      			</li>
+	      			{% endif %}
+	      			{% if show_total_downloads %}
+	      			<li>
+	      				<div class="inner-stats">
+		      				<div class="mpacc-stats-icon"><i class="fa fa-download" aria-hidden="true"></i></div>
+		      				<div class="stats-text">
+			      				<div class="totals">
+			      					<div class="border"></div>
+			      					<h3>{{ title_total_downloads }}</h3>
+			      				</div>
+			      				<h2 class="hovicon effect-4 sub-b"><span class="count">{{ total_downloads }}</span> <small>{{ text_downloads }}</small></h2>
+			      				<a href="{{ download_link }}" class="btn-vw">{{ button_viewall }}</a>
+			      			</div>	
+	      				</div>
+	      			</li>
+	      			{% endif %}
+	      		</ul>
+	      	</div>
+	      	{% endif %}
+	      	<div class="mpacc-orders-links">
+	      		{% if links %}
+		      	<div class="mpacc-other-links">
+		      		<ul class="list-unstyled">
+		      			{% for link in links %}
+		      			<li><a href="{{ link.link }}" class="foo"><i class="fa {{ link.icon }}" aria-hiddem="true"></i><span>{{ link.title }}</span></a></li>
+		      			{% endfor %}
+		      		</ul>
+		      	</div>
+		      	{% endif %}
+		      	{% if orders and show_recent_orders %}
+		      	<div class="mpacc-orders">
+		      		<h3>{{ title_recent_orders }}</h3>
+		      		{% for order in orders %}
+		      		<div class="table-responsive">
+			      		<table class="table mpmain-table">
+				          	<tbody>
+			          		<tr>
+					          	<td colspan="2">
+					          	  <table class="table">	
+							          <thead>
+							          	<tr>
+					      					<th>{{ coulmn_order_id }}</th>
+					      					<th class="text-center">{{ coulmn_status }}</th>
+					      					<th class="text-center">{{ coulmn_total }}</th>
+					      					<th class="text-center">{{ coulmn_date }}</th>
+					      					<th class="text-right">{{ coulmn_action }}</th>
+					      				</tr>
+							          </thead>
+							          <tbody>
+							            <tr>
+					      					<td>#{{ order.order_id }}</td>
+					      					<td class="text-center"><span class="mp-complete">{{ order.status }}</span></td>
+					      					<td class="text-center">{{ order.total }}</td>
+					      					<td class="text-center">{{ order.date_added }}</td>
+					      					<td class="text-right">
+					      						<a  class="btn button" class="prdct-detail" data-toggle="collapse" data-target="#prdct-detail-{{ order.order_id }}" role="button" aria-expanded="true"><i class="fa fa-eye"></i></a> 
+					      					</td>
+					      				</tr>
+							          </tbody>
+						          </table>
+						        </td>
+					        </tr>
+							<tr>
+							  <td>
+							    <div id="prdct-detail-{{ order.order_id }}" class="panel-collapse collapse">
+							      <table class="table complete-order">
+							        <tbody>
+							          <tr>
+							            <td>
+							              <table class="table table-condensed">
+							                <tbody>
+							                	{% for product in order.products %}
+												<tr>
+													<td></td>
+													<td class="text-left">
+													  <img src="{{ product.image }}" class="img-responsiev" alt="" title="{{ product.name }}" width="50" height="50">
+													</td>
+													<td class="text-left caption acc-pro-name">
+													  <div class="name">{{ product.name }}</div>
+													  <div class="price">{{ text_price }}: <span>{{ product.price }}</span></div>
+													  <div class="quantity">{{ text_quantity }}: <span>{{ product.quantity }}</span></div>
+													</td>
+													<td class="text-left">
+													  <a href="{{ product.reorder }}" class="mp-button">{{ button_reorder }}</a> 
+													  <a href="{{ product.return }}" class="mp-return">{{ button_return }}</a>
+													</td>
+												</tr>
+												{% endfor %}
+							                </tbody>
+							              </table>
+							            </td>
+							            <td width="25%" class="text-right">
+							            <a href="{{ order.view }}" class="mp-button">{{ button_order_details }}</a>
+							            </td>
+							          </tr>
+							        </tbody>
+							      </table>
+							    </div>
+							  </td>
+							</tr>
+				        	</tbody>
+				    	</table>
+			    	</div>
+			    	{% endfor %}
+		      	</div>
+		      	{% endif %}
+		    </div>
+	      </div>
+      {{ content_bottom }}</div>
+      {{ themeclass == 'default-account' ? column_right : '' }}</div>
+<script type="text/javascript">
+/* $('.count').each(function () {
+    $(this).prop('Counter',0).animate({
+        Counter: $(this).text()
+    }, {
+        duration: 4000,
+        easing: 'swing',
+        step: function (now) {
+            $(this).text(Math.ceil(now));
+        }
+    });
+}); */
+</script>
+<style type="text/css">
+{% if acc_stats_icon_color %}
+	.mpacc-stats .mpacc-stats-icon i{
+		color: {{ acc_stats_icon_color }};
+	}
+{% endif %}
+{% if acc_stats_heading_bg or acc_stats_heading_color %}
+.mpacc-stats ul li h3{
+	{% if acc_stats_heading_bg %}
+	background: {{ acc_stats_heading_bg }};
+	{% endif %}
+
+	{% if acc_stats_heading_color %}
+	color: {{ acc_stats_heading_color }};
+	{% endif %}
+}
+{% endif %}
+
+{% if acc_stats_bg %}
+.mpacc-stats ul li .inner-stats{
+	background: {{ acc_stats_bg }};
+}
+{% endif %}
+
+{% if acc_stats_icon_border_color %}
+.hovicon.effect-4{
+	box-shadow: 0 0 0 4px {{ acc_stats_icon_border_color }};
+}
+.hovicon.effect-4::after{
+	border-color: {{ acc_stats_icon_border_color }};
+}
+{% endif %}
+
+{% if acc_stats_text_color %}
+.mpacc-stats .inner-stats .stats-text h2, .mpacc-stats ul li h2 small, .mpacc-stats ul li .btn-vw{
+	color: {{ acc_stats_text_color }};
+}
+{% endif %}
+
+{% if acc_other_links_border_color %}
+.mpacc-other-links ul li a{
+	border-color: {{ acc_other_links_border_color }};
+}
+{% endif %}
+
+{% if acc_other_links_border_hovcolor %}
+.foo::before, .foo::after{
+	border-color: {{ acc_other_links_border_hovcolor }};
+}
+{% endif %}
+
+{% if acc_other_links_border_hovcolor or acc_other_links_icon_color %}
+.mpacc-other-links ul li i{
+	{% if acc_other_links_border_hovcolor %}
+	background: {{ acc_other_links_border_hovcolor }};
+	{% endif %}
+
+	{% if acc_other_links_icon_color %}
+	color: {{ acc_other_links_icon_color }};
+	{% endif %}
+}
+{% endif %}
+
+{% if acc_other_links_text_color %}
+.mpacc-other-links ul li a span{
+	color: {{ acc_other_links_text_color }};
+}
+{% endif %}
+
+{% if acc_table_heading_bg or acc_table_heading_color %}
+.mpacc-orders h3{
+	{% if acc_table_heading_bg %}
+	background: {{ acc_table_heading_bg }};
+	{% endif %}
+
+	{% if acc_table_heading_color %}
+	color: {{ acc_table_heading_color }};
+	{% endif %}
+}
+{% endif %}
+
+{% if acc_table_text_color %}
+.mpacc-orders .mpmain-table{
+	color: {{ acc_table_text_color }};
+}
+{% endif %}
+
+{% if acc_table_thead_bodr_color %}
+.mpacc-orders .table > thead > tr > th{
+	border-color: {{ acc_table_thead_bodr_color }} !important;
+}
+{% endif %}
+
+{% if order_label_complete_bg or order_label_complete_color %}
+.mp-complete{
+	{% if order_label_complete_bg %}
+	background: {{ order_label_complete_bg }};
+	{% endif %}
+
+	{% if order_label_complete_color %}
+	color: {{ order_label_complete_color }};
+	{% endif %}
+}
+{% endif %}
+
+{% if order_table_complete_bg or order_table_complete_color %}
+.mpacc-orders .complete-order{
+	{% if order_table_complete_bg %}
+	background: {{ order_table_complete_bg }} !important;
+	{% endif %}
+
+	{% if order_table_complete_color %}
+	color: {{ order_table_complete_color }};
+	{% endif %}
+}
+{% endif %}
+
+{% if order_innertable_color or order_innertable_bordercolor %}
+.mpacc-orders .mpmain-table .mp-button, .mpacc-orders .mpmain-table .mp-return{
+	{% if order_innertable_color %}
+	color: {{ order_innertable_color }};
+	{% endif %}
+
+	{% if order_innertable_bordercolor %}
+	border-color: {{ order_innertable_bordercolor }};
+	{% endif %}
+}
+{% endif %}
+{{ css }}
+</style>
+</div>
+{{ footer }} 

@@ -8,6 +8,20 @@ class Cart {
 				
 				// >> Product Option Image PRO module
       
+
+				// << Live Price
+				
+				private $liveprice_installed = null;
+				private $liveprice_registry = null;
+				
+				private function getLivePriceModel() { // through the function, because opencart 3.0.0.0 loads cart in the admin section (thus load on _construct fails)
+					if ( $this->liveprice_installed ) {
+						$this->liveprice_registry->get('load')->model('extension/liveopencart/liveprice');
+						return $this->liveprice_registry->get('model_extension_liveopencart_liveprice');
+					}
+				}
+				// >> Live Price
+			
 	private $data = array();
 
 	public function __construct($registry) {
@@ -22,6 +36,14 @@ class Cart {
 		$this->customer = $registry->get('customer');
 		$this->session = $registry->get('session');
 		$this->db = $registry->get('db');
+
+				// << Live Price
+				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "extension WHERE `type` = 'module' AND `code` = 'liveprice'");
+				$this->liveprice_installed = $query->num_rows;
+				$this->liveprice_registry = $registry;
+				
+				// >> Live Price
+			
 		$this->tax = $registry->get('tax');
 		$this->weight = $registry->get('weight');
 
@@ -249,6 +271,27 @@ class Cart {
 					$recurring = false;
 				}
 
+
+				// << Live Price
+				// replace standard calculated price
+				
+				if ( $this->liveprice_installed ) {
+				
+					$lp_prices = array();
+					$lp_product_data 	= array();
+					$lp_product_id 		= $product_query->row['product_id'];
+					$lp_options 			= (array)json_decode($cart['option']);
+					$lp_recurring_id 	= $cart['recurring_id'];
+					$lp_quantity 			= $cart['quantity'];
+					$lp_price_data 		= $this->getLivePriceModel()->getProductPrice( $lp_product_id, -$lp_quantity, $lp_options, $lp_recurring_id, false, true, true );
+					
+					$price = $lp_price_data['prices']['price'];
+					$option_price = $lp_price_data['prices']['option_price'];
+					$option_data = $lp_price_data['option_data'];
+				}
+				
+				// >> Live Price
+			
 
 				// << Product Option Image PRO module
 				

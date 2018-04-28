@@ -1,5 +1,12 @@
-<!--catalog/view/theme/journal2/template/account  -->
+<!--catalog/view/theme/journal2/template/accout/register.twig  -->
 {{ header }}
+<div class="registely" style="background-image:  url(/image/login.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+  height:864px;">
+
 <div id="container" class="container j-container">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
@@ -17,14 +24,13 @@
     {% else %}
       {% set class = 'col-sm-12' %}
     {% endif %}
-    <div id="content" class="{{ class }}">
+        <div id="content" class="{{ class }}">
       <h1 class="heading-title">{{ heading_title }}</h1>
       {{ content_top }}
       <p class="account-text">{{ text_account_already }}</p>
       <div class="content">
         <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
           <fieldset id="account">
-            <legend>{{ text_your_details }}</legend>
             <div class="form-group required" style="display: {% if customer_groups|length > 1 %} block {% else %} none {% endif %};">
               <label class="col-sm-2 control-label">{{ entry_customer_group }}</label>
               <div class="col-sm-10">{% for customer_group in customer_groups %}
@@ -51,13 +57,13 @@
                   <div class="text-danger">{{ error_firstname }}</div>
                 {% endif %} </div>
             </div>
-            <div class="form-group required">
+            <div class="form-group required" style="display:none">
               <label class="col-sm-2 control-label" for="input-lastname">{{ entry_lastname }}</label>
-             <select>
-
-                <option value ="man">男士</option>
-                <option value ="woman">女士</option>
-             </select>
+              <div class="col-sm-10">
+                <input type="text" name="lastname" value="用户" placeholder="{{ entry_lastname }}" id="input-lastname" class="form-control"/>
+                {% if error_lastname %}
+                  <div class="text-danger">{{ error_lastname }}</div>
+                {% endif %} </div>
             </div>
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-email">{{ entry_email }}</label>
@@ -234,7 +240,7 @@
             {% endfor %}
           </fieldset>
           <fieldset>
-            <legend>{{ text_your_password }}</legend>
+        
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-password">{{ entry_password }}</label>
               <div class="col-sm-10">
@@ -252,27 +258,7 @@
                 {% endif %} </div>
             </div>
           </fieldset>
-          <fieldset>
-            <legend>{{ text_newsletter }}</legend>
-            <div class="form-group">
-              <label class="col-sm-2 control-label">{{ entry_newsletter }}</label>
-              <div class="col-sm-10"> {% if newsletter %}
-                  <label class="radio-inline">
-                    <input type="radio" name="newsletter" value="1" checked="checked"/>
-                    {{ text_yes }}</label>
-                  <label class="radio-inline">
-                    <input type="radio" name="newsletter" value="0"/>
-                    {{ text_no }}</label>
-                {% else %}
-                  <label class="radio-inline">
-                    <input type="radio" name="newsletter" value="1"/>
-                    {{ text_yes }}</label>
-                  <label class="radio-inline">
-                    <input type="radio" name="newsletter" value="0" checked="checked"/>
-                    {{ text_no }}</label>
-                {% endif %} </div>
-            </div>
-          </fieldset>
+      
           {{ captcha }}
           {% if text_agree %}
             <div class="buttons">
@@ -414,4 +400,4 @@
     pickTime: true
   });
   //--></script>
-{{ footer }}
+  </div>

@@ -3,6 +3,27 @@ class ControllerProductProduct extends Controller {
 	private $error = array();
 
 	public function index() {
+
+        // << Parent-child Options
+				
+				if ( !$this->parent_child_options_common ) {
+					$this->load->library('liveopencart/parent_child_options_common');
+				}
+				if ( $this->parent_child_options_common->installed() ) {
+					$this->document->addScript($this->parent_child_options_common->getProductPageScriptPath());
+				}
+        
+        // >> Parent-child Options
+      
+
+				// << Live Price
+				
+				$this->load->model('extension/liveopencart/liveprice');
+				$lp_data = $this->model_extension_liveopencart_liveprice->getProductPageAdditionalData();
+				$data = array_merge( !empty($data) ? $data : array(), $lp_data);
+				
+				// >> Live Price
+			
 		$this->load->language('product/product');
 
 		$data['breadcrumbs'] = array();
@@ -156,6 +177,9 @@ class ControllerProductProduct extends Controller {
 
 		$this->load->model('catalog/product');
 
+                $this->load->model('journal2/product');
+            
+
 		$product_info = $this->model_catalog_product->getProduct($product_id);
 
 		if ($product_info) {
@@ -235,13 +259,51 @@ class ControllerProductProduct extends Controller {
 			$data['tab_review'] = sprintf($this->language->get('tab_review'), $product_info['reviews']);
 
 			$data['product_id'] = (int)$this->request->get['product_id'];
+
+        // << Parent-child Options
+				if ( !$this->parent_child_options_common ) {
+					$this->load->library('liveopencart/parent_child_options_common');
+				}
+        $data['pcop_theme_name'] = $this->parent_child_options_common->getThemeName();
+        // >> Parent-child Options
+      
 			$data['manufacturer'] = $product_info['manufacturer'];
+
+			if (strpos($this->config->get('config_template'), 'journal2') === 0) {
+			    $this->load->model('catalog/manufacturer');
+			    $data['text_manufacturer'] = $this->language->get('text_manufacturer');
+                $manufacturer_info = $this->model_catalog_manufacturer->getManufacturer($product_info['manufacturer_id']);
+                if ($manufacturer_info && $manufacturer_info['image'] && $this->journal2->settings->get('manufacturer_image', '0') == '1') {
+                    $this->journal2->settings->set('manufacturer_image', 'on');
+                    $data['manufacturer_image_width'] = $this->journal2->settings->get('manufacturer_image_width', 100);
+                    $data['manufacturer_image_height'] = $this->journal2->settings->get('manufacturer_image_height', 100);
+                    $data['manufacturer_image'] = Journal2Utils::resizeImage($this->model_tool_image, $manufacturer_info['image'], $data['manufacturer_image_width'], $data['manufacturer_image_height']);
+                    switch ($this->journal2->settings->get('manufacturer_image_additional_text', 'none')) {
+                        case 'brand':
+                            $data['manufacturer_image_name'] = $product_info['manufacturer'];
+                            break;
+                        case 'custom':
+                            $data['manufacturer_image_name'] = $this->journal2->settings->get('manufacturer_image_custom_text');
+                            break;
+                    }
+                }
+			}
+            
 			$data['manufacturers'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
 			$data['model'] = $product_info['model'];
 			$data['reward'] = $product_info['reward'];
 			$data['points'] = $product_info['points'];
 			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 
+
+                if (true && $product_info['quantity'] <= 0) {
+                    $data['stock_status'] = 'outofstock';
+                }
+                if (true && $product_info['quantity'] > 0) {
+                    $data['stock_status'] = 'instock';
+                }
+                $data['labels'] = $this->model_journal2_product->getLabels($product_info['product_id']);
+            
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
 			} elseif ($this->config->get('config_stock_display')) {
@@ -255,21 +317,40 @@ class ControllerProductProduct extends Controller {
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
 			} else {
-				$data['popup'] = '';
+				$data['popup'] = $this->model_tool_image->resize('no_image.png', $this->config->get('config_image_popup_width'), $this->config->get('config_image_popup_height'));
 			}
 
 			if ($product_info['image']) {
 				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height'));
 			} else {
-				$data['thumb'] = '';
+				$data['thumb'] = $this->model_tool_image->resize('no_image.png', $this->config->get('config_image_thumb_width'), $this->config->get('config_image_thumb_height'));
 			}
 
 			$data['images'] = array();
 
 			$results = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
 
+				// << << Product Option Image PRO module
+
+				liveopencart\poip::initLibrary($this->registry);
+				$this->liveopencart_poip->getModel()->addProductPageResources();
+				
+				$poip_data = $this->liveopencart_poip->getModel()->getDataForProductPage($this->request->get['product_id'], $results);
+				if ( $poip_data ) {
+					$data = array_merge($data, $poip_data['data']);
+					$results = $poip_data['results'];
+				}
+			
+				//>> Product Option Image PRO module
+      
+
 			foreach ($results as $result) {
 				$data['images'][] = array(
+
+				// << Product Option Image PRO module
+				'title' => isset($result['title']) ? $result['title'] : '',
+				// >> Product Option Image PRO module
+      
 					'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
 					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
 				);
@@ -282,6 +363,16 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if ((float)$product_info['special']) {
+
+                if (strpos($this->config->get('config_template'), 'journal2') === 0 && $this->journal2->settings->get('show_countdown_product_page', 'on') == 'on') {
+                    $this->load->model('journal2/product');
+                    $date_end = $this->model_journal2_product->getSpecialCountdown($this->request->get['product_id']);
+                    if ($date_end === '0000-00-00') {
+                        $date_end = false;
+                    }
+                    $data['date_end'] = $date_end;
+                }
+            
 				$data['special'] = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
 			} else {
 				$data['special'] = false;
@@ -297,6 +388,15 @@ class ControllerProductProduct extends Controller {
 
 			$data['discounts'] = array();
 
+
+				// << Live Price
+				
+				// display discounts with prefixes when percent discount enabled for total amount
+				$this->load->model('extension/liveopencart/liveprice');
+				if ( !($data['discounts'] = $this->model_extension_liveopencart_liveprice->getChangedViewOfDiscounts($discounts, $product_info)) ) // default way
+				
+				// >> Live Price
+			
 			foreach ($discounts as $discount) {
 				$data['discounts'][] = array(
 					'quantity' => $discount['quantity'],
@@ -307,21 +407,40 @@ class ControllerProductProduct extends Controller {
 			$data['options'] = array();
 
 			foreach ($this->model_catalog_product->getProductOptions($this->request->get['product_id']) as $option) {
+
+        // << Parent-child Options
+        if ( !isset($pcop_data) ) $pcop_data = array();
+        $pcop_data[$option['product_option_id']] = isset($option['pcop_front']) ? $option['pcop_front'] : array();
+        // >> Parent-child Options
+      
 				$product_option_value_data = array();
 
 				foreach ($option['product_option_value'] as $option_value) {
 					if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
 						if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
 							$price = $this->currency->format($this->tax->calculate($option_value['price'], $product_info['tax_class_id'], $this->config->get('config_tax') ? 'P' : false), $this->session->data['currency']);
+
+				// << Live Price
+
+				$this->load->model('extension/liveopencart/liveprice');
+				$price = $this->model_extension_liveopencart_liveprice->changeOptionPriceFormat($price, $option_value);
+
+				// >> Live Price
+			
 						} else {
 							$price = false;
 						}
 
 						$product_option_value_data[] = array(
+
+				// << Product Option Image PRO module
+				'poip_image' => $this->liveopencart_poip->getModel()->getProductOptionValuePOIPThumbResized($option_value['poip_image']),
+				// >> Product Option Image PRO module
+			
 							'product_option_value_id' => $option_value['product_option_value_id'],
 							'option_value_id'         => $option_value['option_value_id'],
 							'name'                    => $option_value['name'],
-							'image'                   => $this->model_tool_image->resize($option_value['image'], 50, 50),
+							'image'                   => strpos($this->config->get('config_template'), 'journal2') === 0 && $option_value['image'] && is_file(DIR_IMAGE . $option_value['image']) ? Journal2Utils::resizeImage($this->model_tool_image, $option_value['image'], $this->journal2->settings->get('product_page_options_push_image_width', 500), $this->journal2->settings->get('product_page_options_push_image_height', 400), 'crop') : $this->model_tool_image->resize($option_value['image'], 500, 400),
 							'price'                   => $price,
 							'price_prefix'            => $option_value['price_prefix']
 						);
@@ -359,6 +478,11 @@ class ControllerProductProduct extends Controller {
 				$data['customer_name'] = '';
 			}
 
+
+        // << Parent-child Options
+        $data['pcop_data'] = !empty($pcop_data) ? $pcop_data : array();
+        // >> Parent-child Options
+      
 			$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
 			$data['rating'] = (int)$product_info['rating'];
 
@@ -408,13 +532,67 @@ class ControllerProductProduct extends Controller {
 					$rating = false;
 				}
 
+
+                $date_end = false;
+                if (strpos($this->config->get('config_template'), 'journal2') === 0 && $special && $this->journal2->settings->get('show_countdown', 'never') !== 'never') {
+                    $this->load->model('journal2/product');
+                    $date_end = $this->model_journal2_product->getSpecialCountdown($result['product_id']);
+                    if ($date_end === '0000-00-00') {
+                        $date_end = false;
+                    }
+                }
+            
+
+                $additional_images = $this->model_catalog_product->getProductImages($result['product_id']);
+
+                $image2 = false;
+
+                if (count($additional_images) > 0) {
+                    $image2 = $this->model_tool_image->resize($additional_images[0]['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
+                }
+            
+				// << Live Price
+				$this->load->model('extension/liveopencart/liveprice');
+				
+				if ( isset($result) ) {
+					$lp_product = $result;
+				} else {
+					$lp_product = $product_info;
+				}
+				
+				$prices = $this->model_extension_liveopencart_liveprice->getPriceStartingFrom( $lp_product, $price, $special, isset($tax) ? $tax : false );
+				if ( $prices ) {
+					$price = $prices['f_price'];
+					if ($prices['f_special']) {
+						$special = $prices['f_special'];
+					}
+					if ( isset($tax) ) {
+						$tax = $prices['f_tax'];
+					}
+				}
+				// >> Live Price
+				
 				$data['products'][] = array(
+
+				// << Product Option Image PRO module
+				'option_images'  => $this->liveopencart_poip->getModel()->getCategoryImagesForController( $result['product_id'], "related_products" ),
+				// >> Product Option Image PRO module
+      
 					'product_id'  => $result['product_id'],
 					'thumb'       => $image,
+
+                'thumb2'       => $image2,
+            
+
+                'labels'        => $this->model_journal2_product->getLabels($result['product_id']),
+            
 					'name'        => $result['name'],
 					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
 					'price'       => $price,
 					'special'     => $special,
+
+                'date_end'       => $date_end,
+            
 					'tax'         => $tax,
 					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
 					'rating'      => $rating,
@@ -531,6 +709,11 @@ class ControllerProductProduct extends Controller {
 			$page = 1;
 		}
 
+
+        // << Parent-child Options
+        $data['pcop_data'] = !empty($pcop_data) ? $pcop_data : array();
+        // >> Parent-child Options
+      
 		$data['reviews'] = array();
 
 		$review_total = $this->model_catalog_review->getTotalReviewsByProductId($this->request->get['product_id']);
@@ -538,6 +721,11 @@ class ControllerProductProduct extends Controller {
 		$results = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], ($page - 1) * 5, 5);
 
 		foreach ($results as $result) {
+
+        // << Parent-child Options
+        $data['pcop_data'] = !empty($pcop_data) ? $pcop_data : array();
+        // >> Parent-child Options
+      
 			$data['reviews'][] = array(
 				'author'     => $result['author'],
 				'text'       => nl2br($result['text']),

@@ -1,0 +1,311 @@
+<div class="mpacc-profile">
+  {% if logged %}
+    {% if customer_thumb or show_name or show_group or show_email or (show_telephone and telephone) %}
+    <div class="profile-info">
+      {% if customer_thumb %}
+      <div class="profile-image">
+        <a class="pic-upload"><img src="{{ customer_thumb }}" class="img-responsive"/></a>
+      </div>
+      {% endif %}
+      {% if show_name %}
+      <h3 class="user-name">{{ name }}</h3>    
+      {% endif %}
+      
+      {% if show_group %}
+      <div class="email hidden-sm">{{ text_customer_group }}: {{ customer_group }}</div>
+      {% endif %}
+
+      {% if show_email %}
+      <div class="email hidden-sm">{{ email }}</div>
+      {% endif %}
+
+      {% if show_telephone and telephone %}
+      <div class="phone">{{ telephone }}</div>
+      {% endif %}
+    </div>
+    {% endif %}
+  {% else %}
+    {% if customer_thumb or show_name %}
+    <div class="profile-info">
+      {% if customer_thumb %}
+      <div class="profile-image">
+        <a><img src="{{ customer_thumb }}" class="img-responsive"/></a>
+      </div>
+      {% endif %}
+      {% if show_name %}
+      <h3 class="user-name">{{ name }}</h3>    
+      {% endif %}
+    </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="profile-links clearfix {{ logged ? 'mp-notlogged' : '' }}">  
+  {% if links %}
+  <ul class="list-unstyled clearfix">
+    {% for link in links %}
+    {% if link.icon or link.title %}
+    <li>
+      <a href="{{ link.link }}">
+        {% if link.icon %}
+        <i class="fa {{ link.icon }}" aria-hidden="true"></i> 
+        {% endif %}
+
+        {% if link.title %}
+        <span>{{ link.title }}</span>
+        {% endif %}
+      </a>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if more_links %}
+  {% for more_link in more_links %}
+  <div class="text-center">
+    <a href="{{ more_link.link }}" class="btn mpbtn-submit">{{ more_link.title }}</a>
+  </div>
+  {% endfor %}
+  {% endif %}  
+  </div>
+</div>
+
+{% if contact_status %}
+<div class="mp-adminchat">
+  <a data-toggle="collapse" data-target="#mpadmin-form" role="button" aria-expanded="true">    
+    {% if contact_icon %}
+    <i class="fa {{ contact_icon }}" aria-hidden="true"></i>
+    {% endif %}
+    <h3>{{ contact_title }}</h3>
+  </a>  
+  <div class="mpadmin-form collapse" id="mpadmin-form">
+    <form class="form-horizontal" method="" action="">
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label class="control-label">{{ entry_name }}</label>
+          <input type="text" name="contact_name" class="form-control" value="{{ name }}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label class="control-label">{{ entry_email }}</label>
+          <input type="text" name="contact_email" class="form-control" value="{{ email }}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label class="control-label">{{ entry_enquiry }}</label>
+          <textarea class="form-control" rows="5" name="contact_enquiry"></textarea>
+        </div>
+      </div>
+      <div class="text-center"><a class="btn mpbtn-submit" id="contact-submit">{{ button_submit }}</a></div>
+    </form>
+  </div>
+</div>
+{% endif %}
+<script type="text/javascript"><!--
+$('#contact-submit').on('click', function() {
+  $.ajax({
+    url: 'index.php?route=extension/module/mp_accountlinks/send',
+    dataType: 'json',
+    type: 'post',
+    data: $('.mp-adminchat input, .mp-adminchat textarea'),
+    beforeSend: function() {
+      $('#contact-submit').button('loading');
+    },
+    complete: function() {
+      $('#contact-submit').button('reset');
+    },
+    success: function(json) {
+      $('.alert, .text-danger').remove();
+      $('.form-group').removeClass('has-error');
+
+      if(json['error']) {
+        if(json['error']['contact_name']) {
+          $('input[name=\'contact_name\']').after('<div class="text-danger">' + json['error']['contact_name'] + '</div>');
+        }
+
+        if(json['error']['contact_email']) {
+          $('input[name=\'contact_email\']').after('<div class="text-danger">' + json['error']['contact_email'] + '</div>');
+        }
+
+        if(json['error']['contact_enquiry']) {
+          $('textarea[name=\'contact_enquiry\']').after('<div class="text-danger">' + json['error']['contact_enquiry'] + '</div>');
+        }
+
+        $('.text-danger').parent().parent().addClass('has-error');
+      }
+
+      if(json['success']) {
+        $('#contact-submit').after('<div class="alert alert-success success" id="contact-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+        setTimeout(function() {
+          $('#contact-success').remove();
+        }, 5000);
+
+         $('textarea[name=\'contact_enquiry\']').val('');
+      }
+    }
+  });
+});
+//--></script>
+{% if logged %}
+<script type="text/javascript"><!--
+$('.pic-upload').on('click', function() {
+  var node = this;
+
+  $('#form-upload').remove();
+
+  $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+  $('#form-upload input[name=\'file\']').trigger('click');
+
+  if (typeof timer != 'undefined') {
+      clearInterval(timer);
+  }
+
+  timer = setInterval(function() {
+    if ($('#form-upload input[name=\'file\']').val() != '') {
+      clearInterval(timer);
+
+      $.ajax({
+        url: 'index.php?route=extension/module/mp_accountlinks/upload',
+        type: 'post',
+        dataType: 'json',
+        data: new FormData($('#form-upload')[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $(node).after('<div class="mpblur"></div>');
+        },
+        complete: function() {
+          $('.mpblur').remove();
+        },
+        success: function(json) {
+          if (json['error']) {
+            alert(json['error']);
+          }
+
+          if (json['success']) {
+            $('.pic-upload img').attr('src', json['customer_thumb']);
+          }
+        }
+      });
+    }
+  }, 500);
+});
+//--></script>
+{% endif %}
+<style type="text/css">
+{% if profile_info_bg %}
+.mpacc-profile .profile-info{
+  background: {{ profile_info_bg }};
+  {% if profile_info_bg_shadow %}
+  box-shadow: inset 0px -19px 36px {{ profile_info_bg_shadow }};
+  -webkit-box-shadow: inset 0px -19px 36px {{ profile_info_bg_shadow }};
+  {% endif %}
+}
+{% endif %}
+
+{% if profile_text_color %}
+.mpacc-profile .user-name, .mpacc-profile .email, .mpacc-profile .phone{
+  color: {{ profile_text_color }};
+}
+{% endif %}
+
+{% if links_bgcolor %}
+.mpacc-profile .profile-links{
+  background: {{ links_bgcolor }};
+}
+{% endif %}
+
+{% if links_text_color %}
+.mpacc-profile .profile-links ul li a{
+  color: {{ links_text_color }};
+}
+{% endif %}
+
+{% if links_text_hover_color %}
+ .mpacc-profile .profile-links ul li a:hover{
+  color: {{ links_text_hover_color }};
+}
+{% endif %}
+
+{% if links_icon_color %}
+.mpacc-profile .profile-links ul li i{
+  box-shadow: inset 0px 0px 10px {{ links_icon_color }};
+  -webkit-box-shadow: inset 0px 0px 10px {{ links_icon_color }};
+}
+{% endif %}
+
+{% if links_border_color %}
+.mpacc-profile .profile-links ul li{
+  border-color: {{ links_border_color }};
+}
+{% endif %}
+
+{% if button_color and buttons_shadow %}
+.mpbtn-submit{
+  box-shadow: inset 0px 0px 10px {{ buttons_shadow }};
+  -webkit-box-shadow: inset 0px 0px 10px {{ buttons_shadow }};
+  color: {{ button_color }}
+}
+{% endif %}
+
+{% if button_hover_color %}
+.mpbtn-submit:hover{
+  color: {{ button_hover_color }};
+}
+{% endif %}
+
+{% if adminchat_bgcolor %}
+.mp-adminchat{
+  background: {{ adminchat_bgcolor }};
+}
+{% endif %}
+
+{% if adminchat_icon_color %}
+.mp-adminchat i{
+  color: {{ adminchat_icon_color }}
+}
+{% endif %}
+
+{% if adminchat_heading_color %}
+.mp-adminchat h3{
+  color: {{ adminchat_heading_color }}
+}
+{% endif %}
+
+{% if adminchat_form_color %}
+.mp-adminchat .mpadmin-form{
+  color: {{ adminchat_form_color }}
+}
+{% endif %}
+
+{% if adminchat_fields_shadow %}
+.mp-adminchat .mpadmin-form .form-control{
+  	box-shadow: inset 0px 0px 5px {{ adminchat_fields_shadow }};
+  	-webkit-box-shadow: inset 0px 0px 5px {{ adminchat_fields_shadow }};
+	{% if adminchat_form_color %}
+	color: {{ adminchat_form_color }}
+	{% endif %}
+}
+{% endif %}
+
+{% if adminchat_fields_error_shadow %}
+.mp-adminchat .mpadmin-form .has-error .form-control{
+  box-shadow: inset 0px 0px 5px {{ adminchat_fields_error_shadow }};
+  -webkit-box-shadow: inset 0px 0px 5px {{ adminchat_fields_error_shadow }};
+}
+{% endif %}
+
+{% if adminchat_fields_error_color %}
+.mp-adminchat .mpadmin-form .has-error .control-label, .mp-adminchat .mpadmin-form .has-error .text-danger{
+  border-color: {{ adminchat_fields_error_color }};
+  color: {{ adminchat_fields_error_color }};
+}
+{% endif %}
+
+{{ css }}
+</style>

@@ -71,7 +71,28 @@ class ControllerExtensionModuleFeatured extends Controller {
                     $image2 = $this->model_tool_image->resize($additional_images[0]['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
                 }
             
-					$data['products'][] = array(
+					// << Live Price
+				$this->load->model('extension/liveopencart/liveprice');
+				
+				if ( isset($result) ) {
+					$lp_product = $result;
+				} else {
+					$lp_product = $product_info;
+				}
+				
+				$prices = $this->model_extension_liveopencart_liveprice->getPriceStartingFrom( $lp_product, $price, $special, isset($tax) ? $tax : false );
+				if ( $prices ) {
+					$price = $prices['f_price'];
+					if ($prices['f_special']) {
+						$special = $prices['f_special'];
+					}
+					if ( isset($tax) ) {
+						$tax = $prices['f_tax'];
+					}
+				}
+				// >> Live Price
+				
+				$data['products'][] = array(
 						'product_id'  => $product_info['product_id'],
 
 				// << Product Option Image PRO module

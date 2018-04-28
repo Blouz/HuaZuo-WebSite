@@ -26,10 +26,18 @@ class parent_child_options_common {
 		}
 	}
 	
+	public function getResourceLinkPathWithVersion($path, $prefix='') {
+		//$basic_dir = 'catalog/';
+		return $prefix.$path.'?v='.filemtime(DIR_APPLICATION.$path);
+	}
+	
 	public function getProductPageScriptPath() {
 		
 		$basic_path = 'view/javascript/liveopencart/parent_child_options/pcop_front.js';
 		
+		return $this->getResourceLinkPathWithVersion($basic_path, 'catalog/');
+		
+		/*
 		if ( defined('DIR_CATALOG') && defined('HTTP_CATALOG') ) { // admin section
 			$file_path = DIR_CATALOG.$basic_path;
 			$script_path = HTTP_CATALOG.'catalog/'.$basic_path;
@@ -47,7 +55,8 @@ class parent_child_options_common {
 			}
 		}
 		
-		return $script_path.'?v='.$modified; 
+		return $script_path.'?v='.$modified;
+		*/
 	}
 	
 	private function tablesExist() {

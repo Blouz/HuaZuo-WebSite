@@ -560,6 +560,35 @@
   {{ journal2.settings.get('custom_js') }}
 </script>
 
+				<!-- << Live Price -->
+				
+				{% if liveprice_installed ?? 0 %}
+					<script type="text/javascript">
+						(function($){
+							var lp_product_id = {{ lp_product_id }};
+							
+							if ( lp_product_id ) {
+							
+								var params = {
+									'lp_settings' 				: {{ ( liveprice_settings ?? 0 ) ? liveprice_settings|json_encode : '[]' }},
+									'theme_name'					: '{{ lp_theme_name ?? '' }}',
+									'product_id'					: lp_product_id,
+									'get_custom_methods'	: ( typeof(liveprice_getCustomMethodsOfTheme) == 'function' ? liveprice_getCustomMethodsOfTheme : false ),
+								};
+								
+								// standard for most of themes
+								$container = $('body, div:first').first();
+								
+								var liveprice = $container.liveopencart_LivePrice( params );
+								
+							}
+						})(jQuery);
+					</script>
+				{% endif %}
+		
+				<!-- >> Live Price -->
+			
+
 				<!-- << Product Option Image PRO module -->
 				{% if poip_installed ?? false %}
 					<script  type = "text/javascript" ><!--

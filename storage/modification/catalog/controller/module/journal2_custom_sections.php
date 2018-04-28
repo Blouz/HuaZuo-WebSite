@@ -388,6 +388,25 @@ class ControllerModuleJournal2CustomSections extends Controller {
                     $cls['countdown-on'] = 'countdown-on';
                 }
 
+
+				// << Live Price
+				$this->load->model('extension/liveopencart/liveprice');
+				
+				$lp_product = $product;
+				
+				$prices = $this->model_extension_liveopencart_liveprice->getPriceStartingFrom( $lp_product, $price, $special, isset($tax) ? $tax : false );
+				if ( $prices ) {
+					$price = $prices['f_price'];
+					if ($prices['f_special']) {
+						$special = $prices['f_special'];
+					}
+					if ( isset($tax) ) {
+						$tax = $prices['f_tax'];
+					}
+				}
+				// >> Live Price
+				
+			
                 $product_data = array(
                     'product_id'    => $product['product_id'],
 

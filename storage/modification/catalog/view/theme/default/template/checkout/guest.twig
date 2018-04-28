@@ -490,7 +490,9 @@ $('#collapse-payment-address button[id^=\'button-payment-custom-field\']').on('c
                             $('#collapse-payment-address #address #input-payment-city').html(html);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
-                            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                            alert(thrownError + "
+" + xhr.statusText + "
+" + xhr.responseText);
                     }
             });
         });

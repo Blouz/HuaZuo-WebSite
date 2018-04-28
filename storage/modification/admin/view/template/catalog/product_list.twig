@@ -6,9 +6,6 @@
         <button type="button" data-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-product').toggleClass('hidden-sm hidden-xs');" class="btn btn-default hidden-md hidden-lg"><i class="fa fa-filter"></i></button>
         <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
         <button type="submit" form="form-product" formaction="{{ copy }}" data-toggle="tooltip" title="{{ button_copy }}" class="btn btn-default"><i class="fa fa-copy"></i></button>
-
-				<a href="index.php?route=extension/module/excelport&user_token={{ user_token }}" class="btn btn-info" data-toggle="tooltip" title="Export / Import"><i class="fa fa-file-excel-o"></i></a> 
-			
         <button type="button" form="form-product" formaction="{{ delete }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? $('#form-product').submit() : false;"><i class="fa fa-trash-o"></i></button>
       </div>
       <h1>{{ heading_title }}</h1>
@@ -129,6 +126,17 @@
               
               </select>
             </div>
+
+        <div class="form-group">
+          <label class="control-label" for="input-import-batch">Import label</label>
+          <select name="filter_import_batch" id="input-import-batch" class="form-control">
+            <option value=""></option>
+            {% for gkdImportLabel in importLabels %}
+            <option value="{{gkdImportLabel}}" {% if filter_import_batch == gkdImportLabel %}selected="selected"{% endif %}>{{gkdImportLabel}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      
             <div class="form-group text-right">
               <button type="button" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i> {{ button_filter }}</button>
             </div>
@@ -202,6 +210,12 @@
 $('#button-filter').on('click', function() {
 	var url = '';
 
+ var filter_import_batch = $('select[name=\'filter_import_batch\']').val();
+
+  if (filter_import_batch != '*') {
+		url += '&filter_import_batch=' + encodeURIComponent(filter_import_batch);
+	}
+      
 	var filter_name = $('input[name=\'filter_name\']').val();
 
 	if (filter_name) {

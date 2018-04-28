@@ -6,7 +6,7 @@
  * @created          2016-10-23 11:22:04
  * @modified         2016-12-09 16:43:31
  */
-
+//catalog/language/zh-cn/checkout/cart.php
 // Heading
 $_['heading_title']                           = '购物车';
 
@@ -45,5 +45,5 @@ $_['column_total']                            = '总计';
 $_['error_stock']                             = '商品标有 *** 表示数量不足或没有存货！';
 $_['error_minimum']                           = '%s 最小起订量是 %s！';
 $_['error_required']                          = '%s 必填！';
-$_['error_product']                           = '警告： 您的购物车内没有商品！';
+$_['error_product']                           = '这里没有商品，去别处看看吧';
 $_['error_recurring_required']                = '请选择分期付款！';

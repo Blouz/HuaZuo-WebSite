@@ -1,0 +1,453 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.navigation {
+	width: 1000px;
+	margin: 0 auto;
+	overflow: hidden
+}
+
+.navigation li {
+	list-style: none;
+    float: left;
+    font-size: 20px;
+    margin: 42px 62px;
+    cursor: pointer;
+    /* padding-bottom: 16px; */
+	height: 40px;
+	margin-left: 144px;
+}
+
+.line {
+	border-bottom: 3px solid #222222;
+}
+.youshi1{
+	width: 300px;
+	text-align: center;
+	float: left;
+}
+.youshiList{
+	margin-top: 40px;
+	overflow: hidden;
+}
+
+.youshi1 span{
+	font-size: 35px;
+	font-weight: bold;
+}
+.youshi1 p{
+	font-size: 12px !important;
+	width: 160px;
+	margin: 0 auto;
+	margin-top: 20px;
+	font-weight: 400 !important;
+}
+.lists {
+	
+	margin: 0 auto;
+}
+.centerImg{
+	background-image: url(/image/catalog/SiteAssets/img/fawutuandui.jpg);
+	height: 430px;
+	background-position: center;
+}
+.beianImg{
+	background-image: url(/image/catalog/SiteAssets/img/banquanbeian.jpg);
+	height: 600px;
+	background-position: center;
+}
+.lists .lisst:nth-of-type(2),
+.lists .lisst:nth-of-type(3),
+.lists .lisst:nth-of-type(4) {
+	display: none;
+}
+.list1{
+	padding-top: 50px;
+	margin: 0 auto;
+	width: 1200px;
+}
+.list1 p{
+	font-size: 25px;
+	font-weight: bold;
+}
+.list1 a{
+	display: block;
+	font-size: 16px;
+	padding-top: 40px;
+	line-height: 30px;
+	font-weight: 600;
+
+}
+.listLine{
+	margin-top: 50px;
+	height: 1px;
+	background-color:#979797 ;
+}
+.userCenter{
+	width: 1200px;
+	margin: 0 auto;
+}
+.userCenter p{
+	font-size: 15px;
+	line-height: 33px;
+	margin-top: 30px;
+	letter-spacing: 1px;
+}
+.userlist{
+	margin-top: 50px;
+	padding-bottom: 40px;
+}
+.userlist span{
+	color: #E36B6C;
+	font-size: 22px;
+}
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.coop .headerImg {
+	height: 540px;
+	background-image:url(/image/catalog/SiteAssets/img/welcome.jpg);
+	background-position: center;
+}
+
+.coop .center {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+.coop .h3Title {
+	text-align: center;
+	margin-top: 30px;
+	font-size: 36px;
+}
+.lists .list1 a{
+	color: black !important;
+}
+.coop .spanTitle {
+	display: block;
+	text-align: center;
+	font-size: 17px;
+}
+
+.coop .Pcontent {
+	font-size: 17px;
+	letter-spacing: 3px;
+	line-height: 33px;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.coop .imgAdult {
+	margin-top: 40px;
+}
+
+.cooplist span {
+	font-size: 22px;
+	padding-top: 40px;
+	line-height: 33px;
+	text-align: center;
+	display: block;
+}
+
+.cooplist p {
+	font-size: 17px;
+	letter-spacing: 3px;
+	line-height: 33px;
+	text-align: center;
+}
+
+.coop .fenLine {
+	width: 27px;
+	height: 27px;
+	display: block;
+	margin: 0 auto;
+	padding-top: 30px;
+}
+
+.chanEnd {
+	height: 7px;
+	background-color: #F2F2F2;
+	margin-top: 40px;
+}
+
+.trueList {
+	margin-top: 80px;
+	padding-bottom: 20px;
+}
+
+.trueList a {
+	display: block;
+	text-align: center;
+	font-size: 17px;
+	color: black !important;
+}
+
+.trueList span {
+	display: block;
+	text-align: center;
+	font-size: 30px;
+	padding-top: 14px;
+}
+
+.trueList p {
+	text-align: center;
+	font-size: 15px;
+	padding-top: 14px;
+	line-height: 30px;
+}
+
+.trueList .listBut {
+	width: 217px;
+	height: 64px;
+	background: rgba(0, 0, 0, 1);
+	border-radius: 32px;
+	font-size: 26px;
+	color: white;
+	line-height: 64px;
+	text-align: center;
+	margin: 0 auto;
+	margin-top: 40px;
+}
+
+.trueList img {
+	margin-top: 99px;
+}
+
+.contaniner{
+	width: 1200px;
+	margin: 0 auto;
+
+}
+.anoutHua h3{
+	text-align: center;
+	font-size: 36px;
+	margin-top: 20px;
+}
+.anoutHua span{
+	display: block;
+	text-align: center;
+	font-size:17px;
+	margin-top: 20px;
+}
+.anoutHua p{
+	font-size: 22px;
+	text-align: center;
+	margin-top: 20px;
+}
+.anoutHua .content{
+	font-size: 17px;
+	letter-spacing: 3px;
+	line-height: 33px;
+}
+.HuaZuo{
+	margin-top: 80px;
+}
+.HuaZuo h4{
+	text-align: center;
+	font-size: 24px;
+}
+.HuaZuo p{
+	font-size: 17px;
+	letter-spacing: 3px;
+	line-height: 33px;
+}
+.HuaZuo .adfult{
+	font-size:22px;
+	padding-top: 60px;
+	line-height: 33px;
+}
+.team{
+	border-top: 1px solid #DCDCDC;
+	border-bottom: 1px solid #DCDCDC;
+	margin-top: 70px;
+}
+.team h3{
+	text-align: center;
+	font-size: 36px;
+	padding: 10px 0;
+}
+.team span{
+	display: block;
+	text-align: center;
+	font-size:17px;
+
+	margin-top: 15px;
+}
+.chanp{
+	margin-top: 40px;
+}
+.chanp h4{
+	text-align: center;
+}
+.chanp p{
+	letter-spacing: 3px;
+	line-height: 33px;
+	text-align: center;
+	padding-top: 40px;
+}
+.chanEnd{
+	height: 7px;
+	background-color: #F2F2F2;
+	margin-top: 40px;
+}
+.helpcenter h3{
+	text-align: center;
+	font-size: 36px;
+	margin-top: 30px;
+}
+.helpcenter span{
+	display: block;
+	text-align: center;
+	font-size:17px;
+
+	margin-top: 20px;
+}
+.defaultP{
+	letter-spacing: 3px ;
+	line-height: 33px;
+	text-align: center;
+	margin-top: 10px;
+}
+.helpcenter .adfult {
+    font-size: 22px;
+    padding-top: 40px;
+    line-height: 33px;
+}
+.que{
+	width: 48%;
+	float: left;
+	height: 100px;
+	letter-spacing: 2px;
+	line-height: 25px;
+	margin-left: 23px;
+	margin-top: 30px;
+	font-size: 15px;
+}
+.ques{
+	margin-top: 30px;
+	position: relative;
+	overflow: hidden;
+}
+.shouhou{
+	display: block;
+	padding-top: 35px;
+	overflow: hidden;
+}
+.shouhou .que{
+	height: 135px;
+}
+.investors h3{
+	text-align: center;
+	font-size: 36px;
+	margin-top: 40px;
+}
+.investors span{
+	display: block;
+	text-align: center;
+	font-size:17px;
+
+	margin-top: 15px;
+}
+.investors{
+	overflow: hidden;
+}
+.investors a{
+	display: block;
+	text-align: center;
+	font-size: 17px;
+	margin-top: 11px;
+}
+.investors img{
+	width: 550px;
+	height: 306px;
+}
+.leftperson{
+	margin-top: 50px;
+	width: 45%;
+	float: left;
+}
+.leftperson span{
+	margin-top: 50px;
+	font-size: 22px;
+}
+.leftperson p{
+	letter-spacing: 3px;
+	line-height: 30px;
+	font-size: 15px;
+}
+.rightperson span{
+	margin-top: 50px;
+	font-size: 22px;
+}
+.rightperson p{
+	letter-spacing: 3px;
+	line-height: 30px;
+	font-size: 15px;
+}
+.rightperson{
+	margin-top: 50px;
+	width: 45%;
+	float: right;
+}
+.support h3{
+	text-align: center;
+	font-size: 36px;
+	margin-top: 40px;
+}
+.support span{
+	display: block;
+	text-align: center;
+	font-size:17px;
+	margin-top: 15px;
+}
+.support .adfult{
+	display: block;
+    text-align: center;
+    font-size: 22px;
+    margin-top: 40px;
+}
+.list1 .defaultP{
+	text-align: left;
+	font-size: 17px;
+	font-weight: 500 !important;
+}
+.callUs h3{
+	text-align: center;
+	font-size: 36px;
+	margin-top: 40px;
+}
+
+.callUs span{
+	display: block;
+	text-align: center;
+	font-size:17px;
+
+	margin-top: 15px;
+}
+.callUs .child{
+	float: left;
+	width: 33%;
+	height: 150px;
+}
+.child img{
+	display: block;
+	margin: 0 auto;
+	padding-top: 60px;
+}
+.child{
+	padding-bottom: 70px;
+}
+.child span{
+	margin-top: 20px;
+	font-size: 15px;
+	font-weight: bold;
+}
+.child p{
+	text-align: center;
+	font-size: 15px;
+
+}

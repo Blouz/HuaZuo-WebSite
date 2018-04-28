@@ -415,6 +415,15 @@ class ControllerJournal2Quickview extends Controller {
 			
 			$this->data['discounts'] = array(); 
 			
+
+				// << Live Price
+				
+				// display discounts with prefixes when percent discount enabled for total amount
+				$this->load->model('extension/liveopencart/liveprice');
+				if ( !($data['discounts'] = $this->model_extension_liveopencart_liveprice->getChangedViewOfDiscounts($discounts, $product_info)) ) // default way
+				
+				// >> Live Price
+			
 			foreach ($discounts as $discount) {
 				$this->data['discounts'][] = array(
 					'quantity' => $discount['quantity'],
@@ -438,6 +447,14 @@ class ControllerJournal2Quickview extends Controller {
 						if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
 							if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
 								$price = Journal2Utils::currencyFormat($this->tax->calculate($option_value['price'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+
+				// << Live Price
+
+				$this->load->model('extension/liveopencart/liveprice');
+				$price = $this->model_extension_liveopencart_liveprice->changeOptionPriceFormat($price, $option_value);
+
+				// >> Live Price
+			
 							} else {
 								$price = false;
 							}
@@ -584,6 +601,23 @@ class ControllerJournal2Quickview extends Controller {
   	}
 
     private function index2() {
+
+				// << Live Price
+				
+				$this->load->model('extension/liveopencart/liveprice');
+				$lp_data = $this->model_extension_liveopencart_liveprice->getProductPageAdditionalData();
+				$data = array_merge( !empty($data) ? $data : array(), $lp_data);
+				
+				if ( $this->model_extension_liveopencart_liveprice->installed() ) {
+					$liveprice_custom_js = $this->model_extension_liveopencart_liveprice->getPathToCustomJS();
+					if ( $liveprice_custom_js ) {
+						$this->journal2->minifier->addScript( $liveprice_custom_js );
+					}
+					$this->journal2->minifier->addScript( $this->model_extension_liveopencart_liveprice->getPathToMainJS() );
+				}
+				
+				// >> Live Price
+			
 		$this->load->language('product/product');
 		$this->load->model('catalog/category');
 		$this->load->model('catalog/manufacturer');
@@ -785,6 +819,15 @@ class ControllerJournal2Quickview extends Controller {
 
 			$data['discounts'] = array();
 
+
+				// << Live Price
+				
+				// display discounts with prefixes when percent discount enabled for total amount
+				$this->load->model('extension/liveopencart/liveprice');
+				if ( !($data['discounts'] = $this->model_extension_liveopencart_liveprice->getChangedViewOfDiscounts($discounts, $product_info)) ) // default way
+				
+				// >> Live Price
+			
 			foreach ($discounts as $discount) {
 				$data['discounts'][] = array(
 					'quantity' => $discount['quantity'],
@@ -807,6 +850,14 @@ class ControllerJournal2Quickview extends Controller {
 					if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
 						if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
 							$price = Journal2Utils::currencyFormat($this->tax->calculate($option_value['price'], $product_info['tax_class_id'], $this->config->get('config_tax') ? 'P' : false));
+
+				// << Live Price
+
+				$this->load->model('extension/liveopencart/liveprice');
+				$price = $this->model_extension_liveopencart_liveprice->changeOptionPriceFormat($price, $option_value);
+
+				// >> Live Price
+			
 						} else {
 							$price = false;
 						}

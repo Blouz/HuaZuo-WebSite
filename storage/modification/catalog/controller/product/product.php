@@ -15,6 +15,15 @@ class ControllerProductProduct extends Controller {
         
         // >> Parent-child Options
       
+
+				// << Live Price
+				
+				$this->load->model('extension/liveopencart/liveprice');
+				$lp_data = $this->model_extension_liveopencart_liveprice->getProductPageAdditionalData();
+				$data = array_merge( !empty($data) ? $data : array(), $lp_data);
+				
+				// >> Live Price
+			
 		$this->load->language('product/product');
 
 		$data['breadcrumbs'] = array();
@@ -379,6 +388,15 @@ class ControllerProductProduct extends Controller {
 
 			$data['discounts'] = array();
 
+
+				// << Live Price
+				
+				// display discounts with prefixes when percent discount enabled for total amount
+				$this->load->model('extension/liveopencart/liveprice');
+				if ( !($data['discounts'] = $this->model_extension_liveopencart_liveprice->getChangedViewOfDiscounts($discounts, $product_info)) ) // default way
+				
+				// >> Live Price
+			
 			foreach ($discounts as $discount) {
 				$data['discounts'][] = array(
 					'quantity' => $discount['quantity'],
@@ -401,6 +419,14 @@ class ControllerProductProduct extends Controller {
 					if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
 						if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
 							$price = $this->currency->format($this->tax->calculate($option_value['price'], $product_info['tax_class_id'], $this->config->get('config_tax') ? 'P' : false), $this->session->data['currency']);
+
+				// << Live Price
+
+				$this->load->model('extension/liveopencart/liveprice');
+				$price = $this->model_extension_liveopencart_liveprice->changeOptionPriceFormat($price, $option_value);
+
+				// >> Live Price
+			
 						} else {
 							$price = false;
 						}
@@ -414,7 +440,7 @@ class ControllerProductProduct extends Controller {
 							'product_option_value_id' => $option_value['product_option_value_id'],
 							'option_value_id'         => $option_value['option_value_id'],
 							'name'                    => $option_value['name'],
-							'image'                   => strpos($this->config->get('config_template'), 'journal2') === 0 && $option_value['image'] && is_file(DIR_IMAGE . $option_value['image']) ? Journal2Utils::resizeImage($this->model_tool_image, $option_value['image'], $this->journal2->settings->get('product_page_options_push_image_width', 30), $this->journal2->settings->get('product_page_options_push_image_height', 30), 'crop') : $this->model_tool_image->resize($option_value['image'], 50, 50),
+							'image'                   => strpos($this->config->get('config_template'), 'journal2') === 0 && $option_value['image'] && is_file(DIR_IMAGE . $option_value['image']) ? Journal2Utils::resizeImage($this->model_tool_image, $option_value['image'], $this->journal2->settings->get('product_page_options_push_image_width', 500), $this->journal2->settings->get('product_page_options_push_image_height', 400), 'crop') : $this->model_tool_image->resize($option_value['image'], 500, 400),
 							'price'                   => $price,
 							'price_prefix'            => $option_value['price_prefix']
 						);
@@ -525,6 +551,27 @@ class ControllerProductProduct extends Controller {
                     $image2 = $this->model_tool_image->resize($additional_images[0]['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
                 }
             
+				// << Live Price
+				$this->load->model('extension/liveopencart/liveprice');
+				
+				if ( isset($result) ) {
+					$lp_product = $result;
+				} else {
+					$lp_product = $product_info;
+				}
+				
+				$prices = $this->model_extension_liveopencart_liveprice->getPriceStartingFrom( $lp_product, $price, $special, isset($tax) ? $tax : false );
+				if ( $prices ) {
+					$price = $prices['f_price'];
+					if ($prices['f_special']) {
+						$special = $prices['f_special'];
+					}
+					if ( isset($tax) ) {
+						$tax = $prices['f_tax'];
+					}
+				}
+				// >> Live Price
+				
 				$data['products'][] = array(
 
 				// << Product Option Image PRO module

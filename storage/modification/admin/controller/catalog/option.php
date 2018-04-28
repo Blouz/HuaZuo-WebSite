@@ -3,6 +3,11 @@ class ControllerCatalogOption extends Controller {
 	private $error = array();
 
 	public function index() {
+
+				// << Live Price
+				$this->load->language('extension/module/liveprice');
+				// >> Live Price
+			
 		$this->load->language('catalog/option');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -13,6 +18,11 @@ class ControllerCatalogOption extends Controller {
 	}
 
 	public function add() {
+
+				// << Live Price
+				$this->load->language('extension/module/liveprice');
+				// >> Live Price
+			
 		$this->load->language('catalog/option');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -45,6 +55,11 @@ class ControllerCatalogOption extends Controller {
 	}
 
 	public function edit() {
+
+				// << Live Price
+				$this->load->language('extension/module/liveprice');
+				// >> Live Price
+			
 		$this->load->language('catalog/option');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -77,6 +92,11 @@ class ControllerCatalogOption extends Controller {
 	}
 
 	public function delete() {
+
+				// << Live Price
+				$this->load->language('extension/module/liveprice');
+				// >> Live Price
+			
 		$this->load->language('catalog/option');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -238,9 +258,6 @@ class ControllerCatalogOption extends Controller {
 		$data['sort'] = $sort;
 		$data['order'] = $order;
 
-                $data['user_token'] = $this->session->data['user_token'];
-            
-
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -257,6 +274,12 @@ class ControllerCatalogOption extends Controller {
 
 				// >> Product Option Image PRO module
       
+
+				// << Live Price
+				$data['entry_calculate_once'] 			= $this->language->get('entry_calculate_once');
+				$data['entry_calculate_once_help'] 	= $this->language->get('entry_calculate_once_help');
+				// >> Live Price
+			
 		$data['text_form'] = !isset($this->request->get['option_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 
 		if (isset($this->error['warning'])) {
@@ -345,6 +368,17 @@ class ControllerCatalogOption extends Controller {
 			$data['sort_order'] = '';
 		}
 
+
+				// << Live Price
+				if (isset($this->request->post['calculate_once'])) {
+					$data['calculate_once'] = $this->request->post['calculate_once'];
+				} elseif (!empty($option_info) && isset($option_info['calculate_once']) ) {
+					$data['calculate_once'] = $option_info['calculate_once'];
+				} else {
+					$data['calculate_once'] = '';
+				}
+				// >> Live Price
+			
 		if (isset($this->request->post['option_value'])) {
 			$option_values = $this->request->post['option_value'];
 		} elseif (isset($this->request->get['option_id'])) {
@@ -399,6 +433,17 @@ class ControllerCatalogOption extends Controller {
 			$this->error['warning'] = $this->language->get('error_type');
 		}
 
+
+				// << Live Price
+				if (isset($this->request->post['calculate_once'])) {
+					$data['calculate_once'] = $this->request->post['calculate_once'];
+				} elseif (!empty($option_info) && isset($option_info['calculate_once']) ) {
+					$data['calculate_once'] = $option_info['calculate_once'];
+				} else {
+					$data['calculate_once'] = '';
+				}
+				// >> Live Price
+			
 		if (isset($this->request->post['option_value'])) {
 			foreach ($this->request->post['option_value'] as $option_value_id => $option_value) {
 				foreach ($option_value['option_value_description'] as $language_id => $option_value_description) {
@@ -434,6 +479,11 @@ class ControllerCatalogOption extends Controller {
 		$json = array();
 
 		if (isset($this->request->get['filter_name'])) {
+
+				// << Live Price
+				$this->load->language('extension/module/liveprice');
+				// >> Live Price
+			
 			$this->load->language('catalog/option');
 
 			$this->load->model('catalog/option');

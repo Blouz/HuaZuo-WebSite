@@ -46,6 +46,19 @@ class ControllerCommonHeader extends Controller {
 		$data['keywords'] = $this->document->getKeywords();
 		$data['links'] = $this->document->getLinks();
 		$data['styles'] = $this->document->getStyles();
+
+			// << Live Price
+
+				$this->load->model('extension/liveopencart/liveprice');
+				if ( $this->model_extension_liveopencart_liveprice->installed() ) {
+					$liveprice_custom_js = $this->model_extension_liveopencart_liveprice->getPathToCustomJS();
+					if ( $liveprice_custom_js ) {
+						$this->document->addScript( $liveprice_custom_js );
+					}
+					$this->document->addScript( $this->model_extension_liveopencart_liveprice->getPathToMainJS() );
+				}
+			// >> Live Price
+			
 		$data['scripts'] = $this->document->getScripts('header');
 		$data['lang'] = $this->language->get('code');
 		$data['direction'] = $this->language->get('direction');

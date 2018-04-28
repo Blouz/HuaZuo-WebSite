@@ -1,9 +1,31 @@
 <?php
 class ModelCatalogOption extends Model {
+
+				// << Live Price
+				function lp_checkTables() {
+					$query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "option` WHERE field='calculate_once' ");
+					if (!$query->num_rows) {
+						$this->db->query("ALTER TABLE `".DB_PREFIX."option` ADD COLUMN `calculate_once` tinyint(1) NOT NULL " );
+					}
+				}
+				function lp_saveData($option_id, $data) {
+					$this->lp_checkTables();
+					$this->db->query("UPDATE `" . DB_PREFIX . "option`
+														SET calculate_once = '" . (isset($data['calculate_once']) ? (int)$data['calculate_once'] : 0) . "'
+														WHERE option_id = '" . (int)$option_id . "'
+														");
+				}
+				// >> Live Price
+			
 	public function addOption($data) {
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "option` SET type = '" . $this->db->escape($data['type']) . "', sort_order = '" . (int)$data['sort_order'] . "'");
 
 		$option_id = $this->db->getLastId();
+
+				// << Live Price
+				$this-> lp_saveData($option_id, $data);
+				// >> Live Price
+			
 
 		foreach ($data['option_description'] as $language_id => $value) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "option_description SET option_id = '" . (int)$option_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "'");
@@ -33,6 +55,11 @@ class ModelCatalogOption extends Model {
 	}
 
 	public function editOption($option_id, $data) {
+
+				// << Live Price
+				$this-> lp_saveData($option_id, $data);
+				// >> Live Price
+			
 		$this->db->query("UPDATE `" . DB_PREFIX . "option` SET type = '" . $this->db->escape($data['type']) . "', sort_order = '" . (int)$data['sort_order'] . "' WHERE option_id = '" . (int)$option_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "option_description WHERE option_id = '" . (int)$option_id . "'");
